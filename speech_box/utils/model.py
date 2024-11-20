@@ -8,9 +8,11 @@ def create_model_dict(id: str, **kwargs) -> Dict:
         "object": "model",
         "created": int(time.time()),
         "owner": "speech-box",
+        "backend": "speech-box",
     }
 
     for k, v in kwargs.items():
-        d[k] = v
+        if v is not None:
+            d[k] = v
 
     return d

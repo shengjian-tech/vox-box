@@ -7,8 +7,7 @@ from typing import Dict, List, Optional
 import tempfile
 import io
 from speech_box.backends.stt.base import STTBackend
-from speech_box.config.config import Config
-from speech_box.utils.file import get_file_size_in_byte
+from speech_box.config.config import BackendEnum, Config, TaskTypeEnum
 from speech_box.utils.log import log_method
 from speech_box.utils.model import create_model_dict
 from faster_whisper.transcribe import WhisperModel
@@ -24,7 +23,6 @@ class FasterWhisper(STTBackend):
         self._cfg = cfg
         self.model_load = False
         self._cfg = cfg
-        self._resource_required = None
         self._model = None
         self._model_dict = {}
 
@@ -35,11 +33,6 @@ class FasterWhisper(STTBackend):
         if os.path.exists(preprocessor_config_path):
             with open(preprocessor_config_path, "r", encoding="utf-8") as f:
                 self._preprocessor_config_json = json.load(f)
-
-        self._supported = self._supported()
-
-    def task_type():
-        return "stt"
 
     def load(self):
         if self.model_load:
@@ -60,40 +53,19 @@ class FasterWhisper(STTBackend):
             compute_type=compute_type,
         )
 
-        resource_required = self._get_required_resource()
-
         self._model_dict = create_model_dict(
-            self._cfg.model, resource_required=resource_required
+            self._cfg.model,
+            task_type=TaskTypeEnum.STT,
+            backend_framework=BackendEnum.FASTER_WHISPER,
         )
         self.model_load = True
         return self
 
+    def is_load(self) -> bool:
+        return self.model_load
+
     def model_info(self) -> Dict:
         return self._model_dict
-
-    def supported(self) -> bool:
-        return self._supported
-
-    def _supported(self) -> bool:
-        model_bin_path = os.path.join(self._cfg.model, "model.bin")
-        if not os.path.exists(model_bin_path):
-            return False
-
-        tokenizer_path = os.path.join(self._cfg.model, "tokenizer.json")
-        if not os.path.exists(tokenizer_path):
-            return False
-
-        if self._preprocessor_config_json is not None:
-            processor_class = self._preprocessor_config_json.get("processor_class")
-            if processor_class is not None and processor_class != "WhisperProcessor":
-                return False
-
-        try:
-            self.load()
-            return True
-        except Exception as e:
-            logger.error(f"Faild to load model, {e}")
-            return False
 
     @log_method
     def transcribe(
@@ -167,60 +139,3 @@ class FasterWhisper(STTBackend):
                 response["segments"] = timestamps
 
             return response
-
-    def _get_required_resource(self) -> Dict:
-        """
-        File size from https://huggingface.co/Systran
-        | large            | Size   | Size (MiB/GiB) |
-        | ---------------- | ------ | -------------- |
-        | tiny en          | 75MB   | 71.53 MiB      |
-        | tiny             | 75MB   | 71.53 MiB      |
-        | base en          | 145MB  | 138.67 MiB     |
-        | base             | 145MB  | 138.67 MiB     |
-        | distil small en  | 332MB  | 316.41 MiB     |
-        | small en         | 484MB  | 461.91 MiB     |
-        | small            | 484MB  | 461.91 MiB     |
-        | distil medium en | 789MB  | 752.93 MiB     |
-        | medium en        | 1.53G  | 1.42 GiB       |
-        | medium           | 1.52G  | 1.41 GiB       |
-        | distil large v2  | 1.51G  | 1.41 GiB       |
-        | distil large v3  | 1.51G  | 1.41 GiB       |
-        | large v3         | 3.09GB | 2.88 GiB       |
-        | large v2         | 3.09GB | 2.88 GiB       |
-        | large v1         | 3.09GB | 2.88 GiB       |
-
-        Resource required from:
-        https://github.com/openai/whisper?tab=readme-ov-file
-        https://github.com/cinprens/Whisper-GUI/tree/main
-        https://huggingface.co/Systran/faster-distil-whisper-large-v2
-
-        | Size         | Parameters | English-only model | Multilingual model | Required VRAM | Required Ram | Relative speed |
-        | ------------ | ---------- | ------------------ | ------------------ | ------------- | ------------ | -------------- |
-        | tiny         | 39 M       | tiny.en            | tiny               | ~1 GB         | ~2 GB        | ~10x           |
-        | base         | 74 M       | base.en            | base               | ~1 GB         | ~2 GB        | ~7x            |
-        | small        | 244 M      | small.en           | small              | ~2 GB         | ~4 GB        | ~4x            |
-        | medium       | 769 M      | medium.en          | medium             | ~5 GB         | ~8 GB        | ~2x            |
-        | distil-large | 756 M      | N/A                | distil-large       |               |              |                |
-        | large        | 1550 M     | N/A                | large              | ~10 GB        | ~16 GB       | 1x             |
-        """
-        Mib = 1024 * 1024
-        Gib = 1024 * 1024 * 1024
-        resource_requirements = {
-            # tiny
-            100 * Mib: {"cuda": {"vram": 1 * Gib}, "cpu": {"ram": 2 * Gib}},
-            # base
-            200 * Mib: {"cuda": {"vram": 1 * Gib}, "cpu": {"ram": 2 * Gib}},
-            # small
-            500 * Mib: {"cuda": {"vram": 2 * Gib}, "cpu": {"ram": 4 * Gib}},
-            # medium
-            1.6 * Gib: {"cuda": {"vram": 5 * Gib}, "cpu": {"ram": 8 * Gib}},
-            # large
-            3.1 * Gib: {"cuda": {"vram": 10 * Gib}, "cpu": {"ram": 16 * Gib}},
-        }
-
-        file_size_in_byte = get_file_size_in_byte(
-            os.path.join(self._cfg.model, "model.bin")
-        )
-        for size, resource in resource_requirements.items():
-            if file_size_in_byte <= size:
-                return resource

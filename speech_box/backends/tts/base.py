@@ -15,11 +15,11 @@ class TTSBackend(ABC):
         pass
 
     @abstractmethod
-    def supported() -> bool:
+    def load() -> bool:
         pass
 
     @abstractmethod
-    def load() -> bool:
+    def is_load() -> bool:
         pass
 
     @abstractmethod

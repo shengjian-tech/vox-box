@@ -78,7 +78,7 @@ async def transcribe(request: Request):
 @router.get("/health")
 async def health():
     model_instance = get_model_instance()
-    if model_instance is None or (not model_instance._model_load):
+    if model_instance is None or (not model_instance.is_load()):
         return HTTPException(status_code=503, detail="Loading model")
     return {"status": "ok"}
 
@@ -91,7 +91,7 @@ async def get_model_list():
     return {"object": "list", "data": [model_instance.model_info()]}
 
 
-@router.get("/v1/models/{model}")
+@router.get("/v1/models/{model_id}")
 async def get_model_info(model_id: str):
     model_instance = get_model_instance()
     if model_instance is None:

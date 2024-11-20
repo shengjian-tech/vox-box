@@ -76,6 +76,7 @@ tn = "^0.0.4"
 cython = "^3.0.11"
 librosa = "^0.10.2.post1"
 grpcio = "^1.68.0"
+optimum = "^1.23.3"
 
 [build-system]
 requires = ["poetry-core"]

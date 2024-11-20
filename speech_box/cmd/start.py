@@ -1,9 +1,7 @@
 import argparse
 import asyncio
 import logging
-from typing import Any, Dict
-
-import yaml
+import os
 
 from speech_box.logging import setup_logging
 from speech_box.config import Config
@@ -33,6 +31,7 @@ def setup_start_cmd(subparsers: argparse._SubParsersAction):
         help="Run speech-box api server.",
         description="Run speech-box api server.",
     )
+
     group = parser_server.add_argument_group("Common settings")
     group.add_argument(
         "-d",
@@ -59,7 +58,6 @@ def setup_start_cmd(subparsers: argparse._SubParsersAction):
         "--model",
         type=str,
         help="Main model path.",
-        required=True,
     )
     group.add_argument(
         "--device",
@@ -67,7 +65,23 @@ def setup_start_cmd(subparsers: argparse._SubParsersAction):
         help="Binding device, cuda:0.",
         default="cpu",
     )
-    parser_server.set_defaults(func=run)
+    group.add_argument(
+        "--huggingface-repo-id",
+        type=str,
+        help="Huggingface repo id for the estimate model.",
+    )
+
+    group.add_argument(
+        "--model-scope-model-id",
+        type=str,
+        help="Model scope model id for the estimate model.",
+    )
+
+    group.add_argument(
+        "--data-dir",
+        type=str,
+        help="Directory to store download model data. Default is OS specific.",
+    )
 
     group = parser_server.add_argument_group("FunASR settings")
     group.add_argument(
@@ -89,6 +103,8 @@ def setup_start_cmd(subparsers: argparse._SubParsersAction):
         required=False,
     )
 
+    parser_server.set_defaults(func=run)
+
 
 def run(args: argparse.Namespace):
     try:
@@ -107,29 +123,46 @@ def run_model_instance(cfg: Config):
 
 def run_server(cfg: Config):
     server = Server(config=cfg)
-
     asyncio.run(server.start())
 
 
-def load_config_from_yaml(yaml_file: str) -> Dict[str, Any]:
-    with open(yaml_file, "r") as file:
-        return yaml.safe_load(file)
-
-
 def parse_args(args: argparse.Namespace) -> Config:
+    validate_args(args)
+
     cfg = Config()
     cfg.debug = args.debug
     cfg.host = args.host
     cfg.port = args.port
-    cfg.model = args.model
     cfg.device = args.device
-    cfg.vad_model = args.funasr_vad_model
-    cfg.punc_model = args.funasr_punc_model
-    cfg.spk_model = args.funasr_spk_model
+    cfg.model = args.model
+    cfg.huggingface_repo_id = args.huggingface_repo_id
+    cfg.model_scope_model_id = args.model_scope_model_id
+    cfg.data_dir = args.data_dir or get_data_dir()
+    cfg.cache_dir = os.path.join(cfg.data_dir, "cache")
+
+    os.makedirs(cfg.data_dir, exist_ok=True)
+    os.makedirs(cfg.cache_dir, exist_ok=True)
     return cfg
 
 
-def set_config_option(args, config_data: dict, option_name: str):
-    option_value = getattr(args, option_name, None)
-    if option_value is not None:
-        config_data[option_name] = option_value
+def validate_args(args: argparse.Namespace):
+    if (
+        args.model is None
+        and args.huggingface_repo_id is None
+        and args.model_scope_model_id is None
+    ):
+        raise Exception(
+            "One of model, huggingface-repo-id or model-scope-model-id is required."
+        )
+
+
+def get_data_dir():
+    app_name = "speech-box"
+    if os.name == "nt":  # Windows
+        data_dir = os.path.join(os.environ["APPDATA"], app_name)
+    elif os.name == "posix":
+        data_dir = f"/var/lib/{app_name}"
+    else:
+        raise Exception("Unsupported OS")
+
+    return os.path.abspath(data_dir)

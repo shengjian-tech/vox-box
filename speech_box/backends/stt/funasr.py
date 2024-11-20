@@ -4,7 +4,7 @@ import os
 from typing import Dict, List, Optional
 import tempfile
 from speech_box.backends.stt.base import STTBackend
-from speech_box.config.config import Config
+from speech_box.config.config import BackendEnum, Config, TaskTypeEnum
 from speech_box.utils.log import log_method
 from speech_box.utils.model import create_model_dict
 
@@ -19,8 +19,6 @@ class FunASR(STTBackend):
     ):
         self.model_load = False
         self._cfg = cfg
-        self._resource_required = None
-        self._voices = None
         self._model = None
         self._model_dict = {}
 
@@ -36,16 +34,8 @@ class FunASR(STTBackend):
             with open(config_json_path, "r", encoding="utf-8") as f:
                 self._config_json = json.load(f)
 
-        self._supported = self._supported()
-
-    def task_type():
-        return "stt"
-
     def load(self):
         from funasr import AutoModel
-
-        if not self._supported:
-            return None
 
         if self.model_load:
             return self
@@ -60,43 +50,20 @@ class FunASR(STTBackend):
             model_path=self._cfg.model,
             log_level=log_level,
             disable_update=True,
-            punc_model=self._cfg.punc_model,
-            vad_model=self._cfg.vad_model,
-            spk_model=self._cfg.spk_model,
         )
-        self._required_resource = self._get_required_resource()
         self._model_dict = create_model_dict(
-            self._cfg.model, required_resource=self._required_resource
+            self._cfg.model,
+            task_type=TaskTypeEnum.STT,
+            backend_framework=BackendEnum.FUN_ASR,
         )
         self._model_load = True
-
         return self
+
+    def is_load(self) -> bool:
+        return self.model_load
 
     def model_info(self) -> Dict:
         return self._model_dict
-
-    def supported(self) -> bool:
-        return self._supported
-
-    def _supported(self) -> bool:
-        # TODO: qwen audio is special
-        if self._configuration_json is not None:
-            task = self._configuration_json.get("task")
-            if task is not None and task != "auto-speech-recognition":
-                return False
-
-            model_type = self._configuration_json.get("model", {}).get("type")
-            if model_type is not None and model_type == "funasr":
-                return True
-
-        if self._config_json is not None:
-            architectures = self._config_json.get("architectures")
-            if (architectures is not None and "QWenLMHeadModel" in architectures) and (
-                self._config_json.get("audio", {}).get("n_layer", 0) != 0
-            ):
-                return True
-
-        return False
 
     @log_method
     def transcribe(
@@ -138,8 +105,3 @@ class FunASR(STTBackend):
 
             text = rich_transcription_postprocess(res[0]["text"])
             return text
-
-    def _get_required_resource(self) -> Dict:
-        # TODO: not accurate
-        Gib = 1024 * 1024 * 1024
-        return {"cuda": {"vram": 10 * Gib}, "cpu": {"ram": 10 * Gib}}

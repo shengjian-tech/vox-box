@@ -3,7 +3,6 @@ import signal
 import sys
 
 from speech_box.cmd import setup_start_cmd
-from speech_box.cmd.estimate import setup_estimate_cmd
 from speech_box.cmd.version import setup_version_cmd
 
 
@@ -27,7 +26,6 @@ def main():
     subparsers = parser.add_subparsers(help="sub-command help")
 
     setup_start_cmd(subparsers)
-    setup_estimate_cmd(subparsers)
     setup_version_cmd(subparsers)
 
     args = parser.parse_args()
@@ -39,5 +37,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# TODO: control c not work while whisper transcribe
