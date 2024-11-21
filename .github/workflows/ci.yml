@@ -20,6 +20,13 @@ jobs:
         python-version: ["3.11"]
         os: [linux, darwin]
     steps:
+      - name: Free Disk Space
+        if: matrix.os == 'linux'
+        uses: jlumbroso/free-disk-space@main
+        with:
+          android: true
+          dotnet: true
+          haskell: true
       - uses: actions/checkout@v4
         name: Checkout code
 
