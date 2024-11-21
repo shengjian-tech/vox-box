@@ -282,6 +282,20 @@ test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypo
 trio = ["trio (>=0.26.1)"]
 
 [[package]]
+name = "argcomplete"
+version = "3.5.1"
+description = "Bash tab completion for argparse"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "argcomplete-3.5.1-py3-none-any.whl", hash = "sha256:1a1d148bdaa3e3b93454900163403df41448a248af01b6e849edc5ac08e6c363"},
+    {file = "argcomplete-3.5.1.tar.gz", hash = "sha256:eb1ee355aa2557bd3d0145de7b06b2a45b0ce461e1e7813f5d066039ab4177b4"},
+]
+
+[package.extras]
+test = ["coverage", "mypy", "pexpect", "ruff", "wheel"]
+
+[[package]]
 name = "async-timeout"
 version = "5.0.1"
 description = "Timeout context manager for asyncio programs"
@@ -3100,6 +3114,7 @@ description = "Nvidia JIT LTO Library"
 optional = false
 python-versions = ">=3"
 files = [
+    {file = "nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:4abe7fef64914ccfa909bc2ba39739670ecc9e820c83ccc7a6ed414122599b83"},
     {file = "nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:06b3b9b25bf3f8af351d664978ca26a16d2c5127dbd53c0497e28d1fb9611d57"},
     {file = "nvidia_nvjitlink_cu12-12.4.127-py3-none-win_amd64.whl", hash = "sha256:fd9020c501d27d135f983c6d3e244b197a7ccad769e34df53a42e276b0e25fa1"},
 ]
@@ -3454,6 +3469,25 @@ mic = ["olefile"]
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
 typing = ["typing-extensions"]
 xmp = ["defusedxml"]
+
+[[package]]
+name = "pipx"
+version = "1.7.1"
+description = "Install and Run Python Applications in Isolated Environments"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pipx-1.7.1-py3-none-any.whl", hash = "sha256:3933c43bb344e649cb28e10d357e0967ce8572f1c19caf90cf39ae95c2a0afaf"},
+    {file = "pipx-1.7.1.tar.gz", hash = "sha256:762de134e16a462be92645166d225ecef446afaef534917f5f70008d63584360"},
+]
+
+[package.dependencies]
+argcomplete = ">=1.9.4"
+colorama = {version = ">=0.4.4", markers = "sys_platform == \"win32\""}
+packaging = ">=20"
+platformdirs = ">=2.1"
+tomli = {version = "*", markers = "python_version < \"3.11\""}
+userpath = ">=1.6,<1.9 || >1.9"
 
 [[package]]
 name = "platformdirs"
@@ -3914,6 +3948,26 @@ files = [
 
 [package.extras]
 windows-terminal = ["colorama (>=0.4.6)"]
+
+[[package]]
+name = "pynini"
+version = "2.1.5"
+description = "Finite-state grammar compilation"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pynini-2.1.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:29ea2c3b8218a87934d8707eceac573d88dc5e8797380711dcb314af203a3eb0"},
+    {file = "pynini-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4c9473cf25231a92a4e2e2226d79036d115c09e2e362dbcf5bc4cbd872b9bf40"},
+    {file = "pynini-2.1.5-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:59f2616e7853cc55d081960a3af4111ed5a6b8a9423ed55dbc6540ddbdd30bce"},
+    {file = "pynini-2.1.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dc61e85445310ce604c53ed52d051af9f965ee186c43b4726e1877990d107c7b"},
+    {file = "pynini-2.1.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4eedc1ea32d4e44c5bafd726f6c2c700ebbeaf006eb0b40240e78c967613267e"},
+    {file = "pynini-2.1.5-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:aba4221843ad23f9e56169f6f7740970e903112944dfec6153aa23979701c304"},
+    {file = "pynini-2.1.5-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2a0b8a9be2297cac7f3aced98ffd8c85be6bcc6229079374994d2699588a145d"},
+    {file = "pynini-2.1.5.tar.gz", hash = "sha256:c32a55228aea4e3a3daa0d22ba0ea89ea90c17151c3a0fd5703b699d4e7d4e9b"},
+]
+
+[package.dependencies]
+Cython = ">=0.29"
 
 [[package]]
 name = "pynndescent"
@@ -5450,6 +5504,20 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
+name = "userpath"
+version = "1.9.2"
+description = "Cross-platform tool for adding locations to the user PATH"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "userpath-1.9.2-py3-none-any.whl", hash = "sha256:2cbf01a23d655a1ff8fc166dfb78da1b641d1ceabf0fe5f970767d380b14e89d"},
+    {file = "userpath-1.9.2.tar.gz", hash = "sha256:6c52288dab069257cc831846d15d48133522455d4677ee69a9781f11dbefd815"},
+]
+
+[package.dependencies]
+click = "*"
+
+[[package]]
 name = "uvicorn"
 version = "0.32.0"
 description = "The lightning-fast ASGI server."
@@ -5467,6 +5535,21 @@ typing-extensions = {version = ">=4.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
 standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "watchfiles (>=0.13)", "websockets (>=10.4)"]
+
+[[package]]
+name = "wetextprocessing"
+version = "1.0.3"
+description = "WeTextProcessing, including TN & ITN"
+optional = false
+python-versions = "*"
+files = [
+    {file = "WeTextProcessing-1.0.3-py3-none-any.whl", hash = "sha256:e84e8a28827cec06750e9d5f4229d80e438f4a7d7feb783e33abe0bbdb83385d"},
+    {file = "WeTextProcessing-1.0.3.tar.gz", hash = "sha256:c29649a74de1de0ee6a8603d4fec150c71f099230389b48d71e3de6463b7832e"},
+]
+
+[package.dependencies]
+importlib-resources = "*"
+pynini = "2.1.5"
 
 [[package]]
 name = "wget"
@@ -5728,4 +5811,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "434bb6f56f88b1d20c65af6c5886a2a5663b47fbfdbc06a4b6427669aa045f62"
+content-hash = "f1574b89e7f155505df52bb5a4dbafe8aaa930872774dcb9de33285aeab98267"

@@ -77,6 +77,9 @@ cython = "^3.0.11"
 librosa = "^0.10.2.post1"
 grpcio = "^1.68.0"
 optimum = "^1.23.3"
+pipx = "^1.7.1"
+pynini = { version="2.1.5", markers = "platform_system == 'Linux'" }
+wetextprocessing = { version="1.0.3", markers = "platform_system == 'Linux'" }
 
 [build-system]
 requires = ["poetry-core"]
