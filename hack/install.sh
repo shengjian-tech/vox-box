@@ -12,9 +12,11 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 source "${ROOT_DIR}/hack/lib/init.sh"
 
 function download_deps() {
+  git submodule update --init --recursive
+  rm -rf "${ROOT_DIR}/speech_box/third_party/CosyVoice/third_party/Matcha-TTS/data"
+  
   pip install poetry==1.8.3 pre-commit==4.0.1
-  pip install pynini==2.1.5 WeTextProcessing==1.0.3
-  poetry install
+  poetry install  
   pre-commit install
 }
 

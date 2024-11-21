@@ -8,6 +8,9 @@ $ROOT_DIR = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent | Split-
 . "$ROOT_DIR/hack/lib/windows/init.ps1"
 
 function Install-Dependency {
+    git submodule update --init --recursive
+    Remove-Item -Recurse -Force "$ROOT_DIR/speech_box/third_party/CosyVoice/third_party/Matcha-TTS/data"
+
     pip install poetry==1.8.3 pre-commit==4.0.1
     if ($LASTEXITCODE -ne 0) {
         SpeechBox.Log.Fatal "failed to install poetry."
@@ -31,7 +34,6 @@ function Install-Dependency {
 SpeechBox.Log.Info "+++ DEPENDENCIES +++"
 try {
     Install-Dependency
-    Get-UI
 }
 catch {
     SpeechBox.Log.Fatal "failed to download dependencies: $($_.Exception.Message)"
