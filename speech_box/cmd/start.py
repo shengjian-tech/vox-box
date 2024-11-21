@@ -83,26 +83,6 @@ def setup_start_cmd(subparsers: argparse._SubParsersAction):
         help="Directory to store download model data. Default is OS specific.",
     )
 
-    group = parser_server.add_argument_group("FunASR settings")
-    group.add_argument(
-        "--funasr-vad-model",
-        type=str,
-        help="Voice activity detector model path.",
-        required=False,
-    )
-    group.add_argument(
-        "--funasr-punc-model",
-        type=str,
-        help="Punctuation restoration model path.",
-        required=False,
-    )
-    group.add_argument(
-        "--funasr-spk-model",
-        type=str,
-        help="Speaker diarization model path.",
-        required=False,
-    )
-
     parser_server.set_defaults(func=run)
 
 

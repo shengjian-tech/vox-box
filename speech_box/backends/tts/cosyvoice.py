@@ -1,3 +1,4 @@
+import os
 import sys
 import wave
 import numpy as np
@@ -10,8 +11,12 @@ from speech_box.config.config import BackendEnum, Config, TaskTypeEnum
 from speech_box.utils.ffmpeg import convert
 from speech_box.utils.model import create_model_dict
 
-sys.path.append("speech_box/third_party/CosyVoice/third_party/Matcha-TTS")
-sys.path.append("speech_box/third_party/CosyVoice/")
+paths_to_insert = [
+    os.path.join(os.path.dirname(__file__), "../../third_party/CosyVoice"),
+    os.path.join(
+        os.path.dirname(__file__), "../../third_party/CosyVoice/third_party/Matcha-TTS"
+    ),
+]
 
 
 class CosyVoice(TTSBackend):
@@ -26,6 +31,9 @@ class CosyVoice(TTSBackend):
         self._model_dict = {}
 
     def load(self):
+        for path in paths_to_insert:
+            sys.path.insert(0, path)
+
         from cosyvoice.cli.cosyvoice import CosyVoice as CosyVoiceModel
 
         if self.model_load:

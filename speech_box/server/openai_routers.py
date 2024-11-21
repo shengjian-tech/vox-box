@@ -38,7 +38,6 @@ async def speech(request: SpeechRequest):
 async def transcribe(request: Request):
     try:
         form = await request.form()
-
         keys = form.keys()
         if "file" not in keys:
             return HTTPException(status_code=400, detail="Field file is required")
