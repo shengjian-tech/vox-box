@@ -77,7 +77,7 @@ async def transcribe(request: Request):
             prompt,
             temperature,
             timestamp_granularities,
-            response_format=response_format,
+            response_format,
         )
 
         if response_format == "json":
@@ -114,7 +114,7 @@ async def get_model_info(model_id: str):
     return model_instance.model_info()
 
 
-@router.get("/voices")
+@router.get("/v1/voices")
 async def get_voice():
     model_instance = get_model_instance()
     if model_instance is None:
