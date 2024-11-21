@@ -119,7 +119,10 @@ async def get_voice():
     model_instance = get_model_instance()
     if model_instance is None:
         return {}
-    return {"voices": model_instance.model_info().get("voices", [])}
+    return {
+        "model": model_instance.model_info().get("id", ""),
+        "voices": model_instance.model_info().get("voices", []),
+    }
 
 
 def get_media_type(response_format) -> str:
