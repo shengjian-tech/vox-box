@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 import httpx
 
 from speech_box import __version__
-from speech_box.server.openai_routers import router
+from speech_box.server.routers import router
 
 
 @asynccontextmanager

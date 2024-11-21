@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
@@ -5,8 +6,11 @@ from fastapi.responses import FileResponse
 from speech_box.backends.stt.base import STTBackend
 from speech_box.backends.tts.base import TTSBackend
 from speech_box.server.model import get_model_instance
+from concurrent.futures import ThreadPoolExecutor
 
 router = APIRouter()
+
+executor = ThreadPoolExecutor()
 
 
 class SpeechRequest(BaseModel):
@@ -25,9 +29,17 @@ async def speech(request: SpeechRequest):
             return HTTPException(
                 status_code=400, detail="Model instance does not support speech API"
             )
-        audio_file = model_instance.speech(
-            request.input, request.voice, request.speed, request.response_format
+
+        loop = asyncio.get_event_loop()
+        audio_file = await loop.run_in_executor(
+            executor,
+            model_instance.speech,
+            request.input,
+            request.voice,
+            request.speed,
+            request.response_format,
         )
+
         media_type = get_media_type(request.response_format)
         return FileResponse(audio_file, media_type=media_type)
     except Exception as e:
@@ -55,7 +67,11 @@ async def transcribe(request: Request):
                 status_code=400,
                 detail="Model instance does not support transcriptions API",
             )
-        data = model_instance.transcribe(
+
+        loop = asyncio.get_event_loop()
+        data = await loop.run_in_executor(
+            executor,
+            model_instance.transcribe,
             audio_bytes,
             language,
             prompt,
@@ -98,11 +114,19 @@ async def get_model_info(model_id: str):
     return model_instance.model_info()
 
 
+@router.get("/voices")
+async def get_voice():
+    model_instance = get_model_instance()
+    if model_instance is None:
+        return {}
+    return {"voices": model_instance.model_info().get("voices", [])}
+
+
 def get_media_type(response_format) -> str:
     if response_format == "mp3":
         media_type = "audio/mpeg"
     elif response_format == "opus":
-        media_type = "audio/ogg;codec=opus"  # codecs?
+        media_type = "audio/ogg;codec=opus"
     elif response_format == "aac":
         media_type = "audio/aac"
     elif response_format == "flac":
