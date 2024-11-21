@@ -22,7 +22,6 @@ antlr4-python3-runtime = "4.9.3"
 anyio = "4.6.2.post1"
 attrs = "24.2.0"
 audioread = "3.0.1"
-av = "13.1.0"
 beautifulsoup4 = "4.12.3"
 grpcio-tools = "1.57.0"
 h11 = "0.14.0"
@@ -53,14 +52,14 @@ kiwisolver = "1.4.7"
 lazy_loader = "0.4"
 torch = "*"
 numpy = "1.26.4"
-faster-whisper = {git = "https://github.com/SYSTRAN/faster-whisper", rev = "be9fb36ed356b9e299b125de6ee91862e0ac9038"}
+faster-whisper = "1.0.3"
 flake8 = "^7.1.1"
 black = "^24.10.0"
 transformers = "^4.46.3"
 scipy = "^1.14.1"
 uvicorn = "^0.32.0"
 fastapi = "^0.115.5"
-funasr = {git = "https://github.com/modelscope/FunASR", rev = "8cd0d4aab71939e56539ff6c1027b37ad4324433"}
+funasr = "1.1.14"
 torchaudio = "^2.5.1"
 python-multipart = "^0.0.17"
 conformer = "^0.3.2"
@@ -81,6 +80,7 @@ pipx = "^1.7.1"
 pynini = { version="2.1.5", markers = "platform_system == 'Linux'" }
 wetextprocessing = { version="1.0.3", markers = "platform_system == 'Linux'" }
 twine = "^5.1.1"
+modelscope = "^1.20.1"
 
 [build-system]
 requires = ["poetry-core"]
