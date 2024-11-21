@@ -70,8 +70,8 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.CI_PYPI_API_TOKEN }}
-          PUBLISH_SOURCE: ${{ matrix.os == 'linux' && '1' || '' }}
           TWINE_REPOSITORY: ${{ vars.CI_PYPI_REPOSITORY || '' }}
+          PUBLISH_SOURCE: ${{ matrix.os == 'linux' && '1' || '' }}
         run: |
           make publish-pypi
 
