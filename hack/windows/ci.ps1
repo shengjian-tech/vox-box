@@ -30,10 +30,10 @@ function Invoke-CI {
 # main
 #
 
-SpeechBox.Log.Info "+++ CI +++"
+VoxBox.Log.Info "+++ CI +++"
 try {
     Invoke-CI $args
 } catch {
-    SpeechBox.Log.Fatal "failed run ci: $($_.Exception.Message)"
+    VoxBox.Log.Fatal "failed run ci: $($_.Exception.Message)"
 }
-SpeechBox.Log.Info "--- CI ---"
+VoxBox.Log.Info "--- CI ---"

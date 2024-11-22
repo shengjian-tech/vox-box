@@ -13,12 +13,12 @@ function Build {
     Ignore-Thirdparty-InvalidFile
     poetry build
     if ($LASTEXITCODE -ne 0) {
-        SpeechBox.Log.Fatal "failed to run poetry build."
+        VoxBox.Log.Fatal "failed to run poetry build."
     }
 
     $whlFiles = Get-ChildItem -Path $distDir -Filter "*.whl" -File
     if ($whlFiles.Count -eq 0) {
-        SpeechBox.Log.Fatal "no wheel files found in $distDir"
+        VoxBox.Log.Fatal "no wheel files found in $distDir"
     }
 
     foreach ($whlFile in $whlFiles) {
@@ -28,7 +28,7 @@ function Build {
         $newFilePath = Join-Path -Path $distDir -ChildPath $newName
         Remove-Item -Path $newFilePath -Force -ErrorAction SilentlyContinue
         Rename-Item -Path $whlFile.FullName -NewName $newFilePath -Force
-        SpeechBox.Log.Info "renamed $orginalName to $newName"
+        VoxBox.Log.Info "renamed $orginalName to $newName"
     }
 }
 
@@ -42,8 +42,8 @@ function Set-Version {
     $gitCommit = if ($null -ne $global:GIT_COMMIT) { $global:GIT_COMMIT } else { "HEAD" }
     $gitCommitShort = $gitCommit.Substring(0, [Math]::Min(7, $gitCommit.Length))
 
-    SpeechBox.Log.Info "setting version to $version"
-    SpeechBox.Log.Info "setting git commit to $gitCommitShort"
+    VoxBox.Log.Info "setting version to $version"
+    VoxBox.Log.Info "setting git commit to $gitCommitShort"
 
     # Replace the __version__ variable in the __init__.py file
     $fileContent = Get-Content -Path $versionFile
@@ -60,7 +60,7 @@ function Restore-Version-File {
 
     git checkout -- $versionFile
     if ($LASTEXITCODE -ne 0) {
-        SpeechBox.Log.Fatal "failed restore version file."
+        VoxBox.Log.Fatal "failed restore version file."
     }
 }
 
@@ -68,13 +68,13 @@ function Restore-Version-File {
 # main
 #
 
-SpeechBox.Log.Info "+++ BUILD +++"
+VoxBox.Log.Info "+++ BUILD +++"
 try {
     Install-Dependency
     Set-Version
     Build
     Restore-Version-File
 } catch {
-    SpeechBox.Log.Fatal "failed to build: $($_.Exception.Message)"
+    VoxBox.Log.Fatal "failed to build: $($_.Exception.Message)"
 }
-SpeechBox.Log.Info "--- BUILD ---"
+VoxBox.Log.Info "--- BUILD ---"

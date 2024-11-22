@@ -3,18 +3,18 @@
 $log_level = $env:LOG_LEVEL -or "debug"
 $log_colorful = $env:LOG_COLORFUL -or $true
 
-function SpeechBox.Log.Errexit {
+function VoxBox.Log.Errexit {
     trap {
         $ErrorMessage = $_.Exception.Message
         $ErrorCode = $_.Exception.HResult
 
-        SpeechBox.Log.Panic -message $ErrorMessage -code $ErrorCode
+        VoxBox.Log.Panic -message $ErrorMessage -code $ErrorCode
         continue
     }
 }
 
 # Debug level logging.
-function SpeechBox.Log.Debug {
+function VoxBox.Log.Debug {
     param (
         [Parameter(Position = 0)]
         [string]$message
@@ -27,7 +27,7 @@ function SpeechBox.Log.Debug {
 }
 
 # Info level logging.
-function SpeechBox.Log.Info {
+function VoxBox.Log.Info {
     param (
         [Parameter(Position = 0)]
         [string]$message
@@ -47,7 +47,7 @@ function SpeechBox.Log.Info {
 }
 
 # Warn level logging.
-function SpeechBox.Log.Warn {
+function VoxBox.Log.Warn {
     param (
         [Parameter(Position = 0)]
         [string]$message
@@ -64,7 +64,7 @@ function SpeechBox.Log.Warn {
 }
 
 # Error level logging, log an error but keep going, don't dump the stack or exit.
-function SpeechBox.Log.Error {
+function VoxBox.Log.Error {
     param (
         [Parameter(Position = 0)]
         [string]$message
@@ -81,7 +81,7 @@ function SpeechBox.Log.Error {
 }
 
 # Fatal level logging, log an error but exit with 1, don't dump the stack or exit.
-function SpeechBox.Log.Fatal {
+function VoxBox.Log.Fatal {
     param (
         [Parameter(Position = 0)]
         [string]$message
@@ -99,7 +99,7 @@ function SpeechBox.Log.Fatal {
 }
 
 # Panic level logging, dump the error stack and exit.
-function SpeechBox.Log.Panic {
+function VoxBox.Log.Panic {
     param (
         [string]$message,
         [int]$code = 1

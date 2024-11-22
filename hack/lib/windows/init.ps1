@@ -13,5 +13,5 @@ Get-ChildItem -Path "$ROOT_DIR/hack/lib/windows" -File | ForEach-Object {
     }
 }
 
-SpeechBox.Log.Errexit
-Get-SpeechBoxVersionVar
+VoxBox.Log.Errexit
+Get-VoxBoxVersionVar

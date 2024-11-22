@@ -1,5 +1,5 @@
 # Define the function to get version variables
-function Get-SpeechBoxVersionVar {
+function Get-VoxBoxVersionVar {
     # Get the build date
     $BUILD_DATE = Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ'
 

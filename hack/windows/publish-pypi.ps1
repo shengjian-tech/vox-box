@@ -11,7 +11,7 @@ function Publish-Pypi {
     poetry run twine check dist/*.whl
     poetry run twine upload dist/*.whl
     if ($LASTEXITCODE -ne 0) {
-        SpeechBox.Log.Fatal "twine upload failed."
+        VoxBox.Log.Fatal "twine upload failed."
     }
 }
 
@@ -19,11 +19,11 @@ function Publish-Pypi {
 # main
 #
 
-SpeechBox.Log.Info "+++ Publish Pypi +++"
+VoxBox.Log.Info "+++ Publish Pypi +++"
 try {
     Publish-Pypi
 }
 catch {
-    SpeechBox.Log.Fatal "failed to publish Pypi: $($_.Exception.Message)"
+    VoxBox.Log.Fatal "failed to publish Pypi: $($_.Exception.Message)"
 }
-SpeechBox.Log.Info "--- Publish Pypi ---"
+VoxBox.Log.Info "--- Publish Pypi ---"

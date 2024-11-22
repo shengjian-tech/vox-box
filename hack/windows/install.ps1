@@ -14,17 +14,17 @@ function Install-Dependency {
 
     pip install poetry==1.8.3 pre-commit==4.0.1
     if ($LASTEXITCODE -ne 0) {
-        SpeechBox.Log.Fatal "failed to install poetry."
+        VoxBox.Log.Fatal "failed to install poetry."
     }
 
     poetry install
     if ($LASTEXITCODE -ne 0) {
-        SpeechBox.Log.Fatal "failed run poetry install."
+        VoxBox.Log.Fatal "failed run poetry install."
     }
 
     poetry run pre-commit install
     if ($LASTEXITCODE -ne 0) {
-        SpeechBox.Log.Fatal "failed run pre-commint install."
+        VoxBox.Log.Fatal "failed run pre-commint install."
     }
 }
 
@@ -32,11 +32,11 @@ function Install-Dependency {
 # main
 #
 
-SpeechBox.Log.Info "+++ DEPENDENCIES +++"
+VoxBox.Log.Info "+++ DEPENDENCIES +++"
 try {
     Install-Dependency
 }
 catch {
-    SpeechBox.Log.Fatal "failed to download dependencies: $($_.Exception.Message)"
+    VoxBox.Log.Fatal "failed to download dependencies: $($_.Exception.Message)"
 }
-SpeechBox.Log.Info "-- DEPENDENCIES ---"
+VoxBox.Log.Info "-- DEPENDENCIES ---"

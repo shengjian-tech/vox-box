@@ -9,7 +9,7 @@ $ROOT_DIR = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent | Split-
 function Test {
     poetry run pytest
     if ($LASTEXITCODE -ne 0) {
-        SpeechBox.Log.Fatal "failed to run poetry run pytest."
+        VoxBox.Log.Fatal "failed to run poetry run pytest."
     }
 }
 
@@ -17,10 +17,10 @@ function Test {
 # main
 #
 
-SpeechBox.Log.Info "+++ TEST +++"
+VoxBox.Log.Info "+++ TEST +++"
 try {
     Test
 } catch {
-    SpeechBox.Log.Fatal "failed to test: $($_.Exception.Message)"
+    VoxBox.Log.Fatal "failed to test: $($_.Exception.Message)"
 }
-SpeechBox.Log.Info "--- TEST ---"
+VoxBox.Log.Info "--- TEST ---"
