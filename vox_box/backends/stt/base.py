@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
-from speech_box.config.config import Config
+from vox_box.config.config import Config
 
 
 class STTBackend(ABC):

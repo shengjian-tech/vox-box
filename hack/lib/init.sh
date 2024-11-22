@@ -19,5 +19,5 @@ for file in "${ROOT_DIR}/hack/lib/"*; do
   fi
 done
 
-speech_box::log::install_errexit
-speech_box::version::get_version_vars
+vox_box::log::install_errexit
+vox_box::version::get_version_vars

@@ -36,7 +36,7 @@ function Install-Dependency {
 }
 
 function Set-Version {
-    $versionFile = Join-Path -Path $ROOT_DIR -ChildPath "speech_box\__init__.py"
+    $versionFile = Join-Path -Path $ROOT_DIR -ChildPath "vox_box\__init__.py"
     $version = if ($null -ne $global:GIT_VERSION) { $global:GIT_VERSION } else { "0.0.0" }
     $gitCommit = if ($null -ne $global:GIT_COMMIT) { $global:GIT_COMMIT } else { "HEAD" }
     $gitCommitShort = $gitCommit.Substring(0, [Math]::Min(7, $gitCommit.Length))
@@ -55,7 +55,7 @@ function Set-Version {
 }
 
 function Restore-Version-File {
-    $versionFile = Join-Path -Path $ROOT_DIR -ChildPath "speech_box\__init__.py"
+    $versionFile = Join-Path -Path $ROOT_DIR -ChildPath "vox_box\__init__.py"
 
     git checkout -- $versionFile
     if ($LASTEXITCODE -ne 0) {

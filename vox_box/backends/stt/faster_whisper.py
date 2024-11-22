@@ -6,10 +6,10 @@ import platform
 from typing import Dict, List, Optional
 import tempfile
 import io
-from speech_box.backends.stt.base import STTBackend
-from speech_box.config.config import BackendEnum, Config, TaskTypeEnum
-from speech_box.utils.log import log_method
-from speech_box.utils.model import create_model_dict
+from vox_box.backends.stt.base import STTBackend
+from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
+from vox_box.utils.log import log_method
+from vox_box.utils.model import create_model_dict
 from faster_whisper.transcribe import WhisperModel
 
 logger = logging.getLogger(__name__)

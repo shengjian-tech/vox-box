@@ -1,9 +1,9 @@
 import logging
-from speech_box.config.config import Config
+from vox_box.config.config import Config
 import uvicorn
 
-from speech_box.logging import setup_logging
-from speech_box.server.app import app
+from vox_box.logging import setup_logging
+from vox_box.server.app import app
 
 logger = logging.getLogger(__name__)
 

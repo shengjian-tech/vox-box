@@ -3,10 +3,10 @@ import asyncio
 import logging
 import os
 
-from speech_box.logging import setup_logging
-from speech_box.config import Config
-from speech_box.server.model import ModelInstance
-from speech_box.server.server import Server
+from vox_box.logging import setup_logging
+from vox_box.config import Config
+from vox_box.server.model import ModelInstance
+from vox_box.server.server import Server
 
 
 logger = logging.getLogger(__name__)
@@ -28,8 +28,8 @@ class OptionalBoolAction(argparse.Action):
 def setup_start_cmd(subparsers: argparse._SubParsersAction):
     parser_server: argparse.ArgumentParser = subparsers.add_parser(
         "start",
-        help="Run speech-box api server.",
-        description="Run speech-box api server.",
+        help="Run vox-box api server.",
+        description="Run vox-box api server.",
     )
 
     group = parser_server.add_argument_group("Common settings")
@@ -137,7 +137,7 @@ def validate_args(args: argparse.Namespace):
 
 
 def get_data_dir():
-    app_name = "speech-box"
+    app_name = "vox-box"
     if os.name == "nt":  # Windows
         data_dir = os.path.join(os.environ["APPDATA"], app_name)
     elif os.name == "posix":

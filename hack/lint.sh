@@ -10,7 +10,7 @@ source "${ROOT_DIR}/hack/lib/init.sh"
 function lint() {
   local path="$1"
 
-  speech_box::log::info "linting ${path}"
+  vox_box::log::info "linting ${path}"
   pre-commit run --all-files
 }
 
@@ -18,6 +18,6 @@ function lint() {
 # main
 #
 
-speech_box::log::info "+++ LINT +++"
-lint "speech_box"
-speech_box::log::info "--- LINT ---"
+vox_box::log::info "+++ LINT +++"
+lint "vox_box"
+vox_box::log::info "--- LINT ---"

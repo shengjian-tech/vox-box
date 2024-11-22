@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "speech_box"
+name = "vox_box"
 version = "0.0.0"
-description = "Speech box"
+description = "Vox box"
 authors = ["GPUStack Authors <contact@gpustack.ai>"]
 readme = "README.md"
 
@@ -87,4 +87,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-speech-box = "speech_box.main:main"
+vox-box = "vox_box.main:main"

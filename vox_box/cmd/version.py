@@ -1,5 +1,5 @@
 import argparse
-from speech_box import __version__, __git_commit__
+from vox_box import __version__, __git_commit__
 
 
 def setup_version_cmd(subparsers: argparse._SubParsersAction):

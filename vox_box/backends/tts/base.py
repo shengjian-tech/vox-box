@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 import logging
 from typing import Dict, Optional
-from speech_box.config.config import Config
-from speech_box.utils.log import log_method
+from vox_box.config.config import Config
+from vox_box.utils.log import log_method
 
 logger = logging.getLogger(__name__)
 

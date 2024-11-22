@@ -18,6 +18,6 @@ function ci() {
 # main
 #
 
-speech_box::log::info "+++ CI +++"
+vox_box::log::info "+++ CI +++"
 ci "$@"
-speech_box::log::info "--- CI ---"
+vox_box::log::info "--- CI ---"

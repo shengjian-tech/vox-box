@@ -1,13 +1,13 @@
 from typing import Union
-from speech_box.backends.stt.base import STTBackend
-from speech_box.backends.stt.faster_whisper import FasterWhisper
-from speech_box.backends.stt.funasr import FunASR
-from speech_box.backends.tts.bark import Bark
-from speech_box.backends.tts.base import TTSBackend
-from speech_box.backends.tts.cosyvoice import CosyVoice
-from speech_box.config.config import BackendEnum, Config
-from speech_box.downloader import downloaders
-from speech_box.elstimator.estimate import estimate_model
+from vox_box.backends.stt.base import STTBackend
+from vox_box.backends.stt.faster_whisper import FasterWhisper
+from vox_box.backends.stt.funasr import FunASR
+from vox_box.backends.tts.bark import Bark
+from vox_box.backends.tts.base import TTSBackend
+from vox_box.backends.tts.cosyvoice import CosyVoice
+from vox_box.config.config import BackendEnum, Config
+from vox_box.downloader import downloaders
+from vox_box.elstimator.estimate import estimate_model
 
 _instance = None
 

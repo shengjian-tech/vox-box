@@ -2,10 +2,10 @@ import json
 import logging
 import os
 from typing import Dict
-from speech_box.config.config import BackendEnum, Config, TaskTypeEnum
-from speech_box.downloader.downloaders import download_model
-from speech_box.elstimator.base import Elstimator
-from speech_box.utils.model import create_model_dict
+from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
+from vox_box.downloader.downloaders import download_model
+from vox_box.elstimator.base import Elstimator
+from vox_box.utils.model import create_model_dict
 
 
 logger = logging.getLogger(__name__)

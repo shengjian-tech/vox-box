@@ -2,8 +2,8 @@ import argparse
 import signal
 import sys
 
-from speech_box.cmd import setup_start_cmd
-from speech_box.cmd.version import setup_version_cmd
+from vox_box.cmd import setup_start_cmd
+from vox_box.cmd.version import setup_version_cmd
 
 
 def handle_signal(sig, frame):

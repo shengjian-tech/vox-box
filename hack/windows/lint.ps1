@@ -55,7 +55,7 @@ function Lint {
 SpeechBox.Log.Info "+++ LINT +++"
 try {
     Get-PSScriptAnalyzer
-    Lint "speech_box"
+    Lint "vox_box"
 }
 catch {
     SpeechBox.Log.Fatal "failed to lint: $($_.Exception.Message)"

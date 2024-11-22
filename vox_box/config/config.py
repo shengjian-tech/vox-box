@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class Config:
-    """A class used to define speech-box configuration.
+    """A class used to define vox-box configuration.
 
     Attributes:
         debug: Enable debug mode.

@@ -14,7 +14,7 @@ log_level="${LOG_LEVEL:-"debug"}"
 log_colorful="${LOG_COLORFUL:-"true"}"
 
 # Handler for when we exit automatically on an error.
-speech_box::log::errexit() {
+vox_box::log::errexit() {
   local err="${PIPESTATUS[*]}"
 
   # if the shell we are in doesn't have errexit set (common in subshells) then
@@ -22,13 +22,13 @@ speech_box::log::errexit() {
   set +o | grep -qe "-o errexit" || return
 
   set +o xtrace
-  speech_box::log::panic "${BASH_SOURCE[1]}:${BASH_LINENO[0]} '${BASH_COMMAND}' exited with status ${err}" "${1:-1}"
+  vox_box::log::panic "${BASH_SOURCE[1]}:${BASH_LINENO[0]} '${BASH_COMMAND}' exited with status ${err}" "${1:-1}"
 }
 
-speech_box::log::install_errexit() {
+vox_box::log::install_errexit() {
   # trap ERR to provide an error handler whenever a command exits nonzero, this
   # is a more verbose version of set -o errexit
-  trap 'speech_box::log::errexit' ERR
+  trap 'vox_box::log::errexit' ERR
 
   # setting errtrace allows our ERR trap handler to be propagated to functions,
   # expansions and subshells
@@ -36,7 +36,7 @@ speech_box::log::install_errexit() {
 }
 
 # Debug level logging.
-speech_box::log::debug() {
+vox_box::log::debug() {
   [[ ${log_level} == "debug" ]] || return 0
   local message="${2:-}"
 
@@ -50,7 +50,7 @@ speech_box::log::debug() {
 }
 
 # Info level logging.
-speech_box::log::info() {
+vox_box::log::info() {
   [[ ${log_level} == "debug" ]] || [[ ${log_level} == "info" ]] || return 0
   local message="${2:-}"
 
@@ -68,7 +68,7 @@ speech_box::log::info() {
 }
 
 # Warn level logging.
-speech_box::log::warn() {
+vox_box::log::warn() {
   local message="${2:-}"
 
   local timestamp
@@ -85,7 +85,7 @@ speech_box::log::warn() {
 }
 
 # Error level logging, log an error but keep going, don't dump the stack or exit.
-speech_box::log::error() {
+vox_box::log::error() {
   local message="${2:-}"
 
   local timestamp
@@ -102,7 +102,7 @@ speech_box::log::error() {
 }
 
 # Fatal level logging, log an error but exit with 1, don't dump the stack or exit.
-speech_box::log::fatal() {
+vox_box::log::fatal() {
   local message="${2:-}"
 
   local timestamp
@@ -125,7 +125,7 @@ speech_box::log::fatal() {
 #   $1 Message to log with the error
 #   $2 The error code to return
 #   $3 The number of stack frames to skip when printing.
-speech_box::log::panic() {
+vox_box::log::panic() {
   local message="${1:-}"
   local code="${2:-1}"
 

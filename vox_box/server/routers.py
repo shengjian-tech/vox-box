@@ -3,9 +3,9 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
 
-from speech_box.backends.stt.base import STTBackend
-from speech_box.backends.tts.base import TTSBackend
-from speech_box.server.model import get_model_instance
+from vox_box.backends.stt.base import STTBackend
+from vox_box.backends.tts.base import TTSBackend
+from vox_box.server.model import get_model_instance
 from concurrent.futures import ThreadPoolExecutor
 
 router = APIRouter()

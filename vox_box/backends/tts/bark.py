@@ -3,14 +3,14 @@ import os
 import tempfile
 from typing import Dict, List, Optional
 
-from speech_box.backends.tts.base import TTSBackend
-from speech_box.config.config import BackendEnum, Config, TaskTypeEnum
+from vox_box.backends.tts.base import TTSBackend
+from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
 from transformers import AutoProcessor, BarkModel
 from scipy.io.wavfile import write as write_wav
 
-from speech_box.utils.ffmpeg import convert
-from speech_box.utils.log import log_method
-from speech_box.utils.model import create_model_dict
+from vox_box.utils.ffmpeg import convert
+from vox_box.utils.log import log_method
+from vox_box.utils.model import create_model_dict
 
 
 class Bark(TTSBackend):

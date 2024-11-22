@@ -3,8 +3,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import httpx
 
-from speech_box import __version__
-from speech_box.server.routers import router
+from vox_box import __version__
+from vox_box.server.routers import router
 
 
 @asynccontextmanager
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="speech-box",
+    title="vox-box",
     lifespan=lifespan,
     response_model_exclude_unset=True,
     version=__version__,

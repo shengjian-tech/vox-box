@@ -7,8 +7,8 @@ def create_model_dict(id: str, **kwargs) -> Dict:
         "id": id,
         "object": "model",
         "created": int(time.time()),
-        "owner": "speech-box",
-        "backend": "speech-box",
+        "owner": "vox-box",
+        "backend": "vox-box",
     }
 
     for k, v in kwargs.items():

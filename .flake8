@@ -11,4 +11,4 @@ exclude =
     .venv,
     .pytest_cache,
     .mypy_cache
-    speech_box/third_party
+    vox_box/third_party

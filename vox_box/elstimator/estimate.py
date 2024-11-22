@@ -1,11 +1,11 @@
 from typing import Dict, List
-from speech_box.config.config import Config
-from speech_box.elstimator.bark import Bark
-from speech_box.elstimator.base import Elstimator
-from speech_box.elstimator.cosyvoice import CosyVoice
-from speech_box.elstimator.faster_whisper import FasterWhisper
-from speech_box.elstimator.funasr import FunASR
-from speech_box.utils.model import create_model_dict
+from vox_box.config.config import Config
+from vox_box.elstimator.bark import Bark
+from vox_box.elstimator.base import Elstimator
+from vox_box.elstimator.cosyvoice import CosyVoice
+from vox_box.elstimator.faster_whisper import FasterWhisper
+from vox_box.elstimator.funasr import FunASR
+from vox_box.utils.model import create_model_dict
 
 
 def estimate_model(cfg: Config) -> Dict:

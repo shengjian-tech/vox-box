@@ -12,7 +12,7 @@ from modelscope.hub.snapshot_download import (
     snapshot_download as modelscope_snapshot_download,
 )
 from modelscope.hub.utils.utils import model_id_to_group_owner_name
-from speech_box.downloader.hub import (
+from vox_box.downloader.hub import (
     match_hugging_face_files,
     match_model_scope_file_paths,
 )

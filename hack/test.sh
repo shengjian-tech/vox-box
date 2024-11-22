@@ -15,6 +15,6 @@ function test() {
 # main
 #
 
-speech_box::log::info "+++ TEST +++"
+vox_box::log::info "+++ TEST +++"
 test
-speech_box::log::info "--- TEST ---"
+vox_box::log::info "--- TEST ---"
