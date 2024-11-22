@@ -28,6 +28,8 @@ function build_platform() {
   if [ -z "$platform" ]; then
     vox_box::log::fatal "undefined platform to build"
   fi
+  
+  ignore_thirdparty_invalid_file
 
   poetry build
 

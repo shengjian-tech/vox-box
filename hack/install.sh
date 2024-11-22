@@ -13,7 +13,8 @@ source "${ROOT_DIR}/hack/lib/init.sh"
 
 function download_deps() {
   git submodule update --init --recursive
-  rm -rf "${ROOT_DIR}/vox_box/third_party/CosyVoice/third_party/Matcha-TTS/data"
+  
+  ignore_thirdparty_invalid_file
   
   pip install poetry==1.8.3 pre-commit==4.0.1
   poetry install  

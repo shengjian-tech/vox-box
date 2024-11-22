@@ -10,6 +10,7 @@ function Build {
     $distDir = Join-Path -Path $ROOT_DIR -ChildPath "dist"
     Remove-Item -Path $distDir -Recurse -Force -ErrorAction SilentlyContinue
 
+    Ignore-Thirdparty-InvalidFile
     poetry build
     if ($LASTEXITCODE -ne 0) {
         SpeechBox.Log.Fatal "failed to run poetry build."
