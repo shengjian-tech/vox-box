@@ -136,6 +136,8 @@ def get_media_type(response_format) -> str:
         media_type = "audio/x-flac"
     elif response_format == "wav":
         media_type = "audio/wav"
+    elif response_format == "pcm":
+        media_type = "audio/pcm"
     else:
         raise Exception(
             f"Invalid response_format: '{response_format}'", param="response_format"

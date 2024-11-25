@@ -8,7 +8,7 @@ from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
 from transformers import AutoProcessor, BarkModel
 from scipy.io.wavfile import write as write_wav
 
-from vox_box.utils.ffmpeg import convert
+from vox_box.utils.audio import convert
 from vox_box.utils.log import log_method
 from vox_box.utils.model import create_model_dict
 
@@ -81,12 +81,8 @@ class Bark(TTSBackend):
             wav_file_path = temp_file.name
             write_wav(wav_file_path, rate=sample_rate, data=audio_array)
 
-            with tempfile.NamedTemporaryFile(
-                suffix=f".{reponse_format}", delete=False
-            ) as output_temp_file:
-                output_file_path = output_temp_file.name
-                convert(wav_file_path, reponse_format, output_file_path, speed)
-                return output_file_path
+            output_file_path = convert(wav_file_path, reponse_format, speed)
+            return output_file_path
 
     def _get_voices(self) -> List[str]:
         voices = []

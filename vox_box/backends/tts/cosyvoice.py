@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 from vox_box.backends.tts.base import TTSBackend
 from vox_box.utils.log import log_method
 from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
-from vox_box.utils.ffmpeg import convert
+from vox_box.utils.audio import convert
 from vox_box.utils.model import create_model_dict
 
 paths_to_insert = [
@@ -83,11 +83,7 @@ class CosyVoice(TTSBackend):
                     )
                     wf.writeframes(tts_audio)
 
-            with tempfile.NamedTemporaryFile(
-                suffix=f".{reponse_format}", delete=False
-            ) as output_temp_file:
-                output_file_path = output_temp_file.name
-                convert(wav_file_path, reponse_format, output_file_path, speed)
+                output_file_path = convert(wav_file_path, reponse_format, speed)
                 return output_file_path
 
     def _get_required_resource(self) -> Dict:
