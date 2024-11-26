@@ -42,7 +42,7 @@ class Bark(TTSBackend):
 
         self._processor = AutoProcessor.from_pretrained(self._cfg.model)
         self._model = BarkModel.from_pretrained(self._cfg.model).to(self._cfg.device)
-        self._model = self._model.to_bettertransformer()
+        self._model = self._model.to_bettertransformer().to(self._cfg.device)
         self._voices = self._get_voices()
 
         self._model_dict = create_model_dict(
@@ -72,7 +72,7 @@ class Bark(TTSBackend):
         if voice not in self._voices:
             raise ValueError(f"Voice {voice} not supported")
 
-        inputs = self._processor(input, voice_preset=voice)
+        inputs = self._processor(input, voice_preset=voice).to(self._cfg.device)
         audio_array = self._model.generate(**inputs)
         audio_array = audio_array.cpu().numpy().squeeze()
         sample_rate = self._model.generation_config.sample_rate
