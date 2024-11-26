@@ -46,9 +46,18 @@ class FasterWhisper(STTBackend):
         if platform.system() == "Darwin":
             compute_type = "int8"
 
+        device = self._cfg.device
+        device_index = 0
+        if self._cfg.device != "cpu":
+            arr = device.split(":")
+            device = arr[0]
+            if len(arr) > 1:
+                device_index = int(arr[1])
+
         self._model = WhisperModel(
             self._cfg.model,
-            self._cfg.device,
+            device=device,
+            device_index=device_index,
             cpu_threads=cpu_threads,
             compute_type=compute_type,
         )
