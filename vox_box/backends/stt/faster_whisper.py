@@ -1,4 +1,3 @@
-import dataclasses
 import json
 import logging
 import os
@@ -125,12 +124,11 @@ class FasterWhisper(STTBackend):
                 text_buffer.write(seg.text)
 
                 if not without_timestamps:
-
                     if word_timestamps:
                         for wd in seg.words:
-                            timestamps.append(dataclasses.asdict(wd))
+                            timestamps.append(wd._asdict())
                     else:
-                        timestamps.append(dataclasses.asdict(seg))
+                        timestamps.append(seg._asdict())
 
             text = text_buffer.getvalue()
             if without_timestamps:
