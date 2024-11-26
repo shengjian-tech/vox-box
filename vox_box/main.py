@@ -16,7 +16,7 @@ signal.signal(signal.SIGTERM, handle_signal)
 
 def main():
     parser = argparse.ArgumentParser(
-        description="SpeachBox",
+        description="VoxBox",
         conflict_handler="resolve",
         add_help=True,
         formatter_class=lambda prog: argparse.HelpFormatter(

@@ -83,6 +83,7 @@ def setup_start_cmd(subparsers: argparse._SubParsersAction):
         help="Directory to store download model data. Default is OS specific.",
     )
 
+    logger.info("Setting up start command.")
     parser_server.set_defaults(func=run)
 
 
@@ -90,6 +91,9 @@ def run(args: argparse.Namespace):
     try:
         cfg = parse_args(args)
         setup_logging(cfg.debug)
+
+        logger.info("Starting with arguments: %s", args._get_kwargs())
+
         run_model_instance(cfg)
         run_server(cfg)
     except Exception as e:
