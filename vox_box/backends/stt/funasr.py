@@ -100,6 +100,7 @@ class FunASR(STTBackend):
                 language=language,
                 prompt=prompt,
                 temperature=temperature,
+                use_itn=True,
                 **kwargs
             )
 
