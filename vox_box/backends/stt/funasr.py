@@ -21,6 +21,9 @@ class FunASR(STTBackend):
         self._cfg = cfg
         self._model = None
         self._model_dict = {}
+        self._log_level = "INFO"
+        if self._cfg.debug:
+            self._log_level = "DEBUG"
 
         self._configuration_json = None
         self._config_json = None
@@ -40,15 +43,11 @@ class FunASR(STTBackend):
         if self.model_load:
             return self
 
-        log_level = "INFO"
-        if self._cfg.debug:
-            log_level = "DEBUG"
-
         self._model = AutoModel(
             model=self._cfg.model,
             device=self._cfg.device,
             model_path=self._cfg.model,
-            log_level=log_level,
+            log_level=self._log_level,
             disable_update=True,
         )
         self._model_dict = create_model_dict(
@@ -101,6 +100,7 @@ class FunASR(STTBackend):
                 prompt=prompt,
                 temperature=temperature,
                 use_itn=True,
+                log_level=self._log_level,
                 **kwargs
             )
 
