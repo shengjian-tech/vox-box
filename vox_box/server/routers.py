@@ -189,7 +189,6 @@ async def get_voice():
     if model_instance is None:
         return {}
     return {
-        "model": model_instance.model_info().get("id", ""),
         "voices": model_instance.model_info().get("voices", []),
     }
 
