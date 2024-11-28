@@ -32,20 +32,27 @@ def convert(
         suffix=f"{suffix}", delete=False
     ) as output_temp_file:
 
-        output_file_path = output_temp_file.name
-        if response_format == "wav" and speed == 1:
-            shutil.copy(input_file_path, output_file_path)
+        try:
+            output_file_path = output_temp_file.name
+            if response_format == "wav" and speed == 1:
+                shutil.copy(input_file_path, output_file_path)
+                return output_file_path
+
+            input_container = av.open(input_file_path)
+            input_stream = input_container.streams.audio[0]
+            if response_format == "pcm":
+                convert_to_pcm(input_stream, output_file_path, speed)
+            else:
+                convert_to_format(
+                    input_stream, output_file_path, response_format, speed
+                )
+
+            input_container.close()
             return output_file_path
-
-        input_container = av.open(input_file_path)
-        input_stream = input_container.streams.audio[0]
-        if response_format == "pcm":
-            convert_to_pcm(input_stream, output_file_path, speed)
-        else:
-            convert_to_format(input_stream, output_file_path, response_format, speed)
-
-        input_container.close()
-        return output_file_path
+        except Exception as e:
+            raise Exception(
+                f"Failed to convert audio to format {response_format}, speed: {speed}: {e}"
+            )
 
 
 def convert_to_pcm(input_stream, output_file_path: str, speed: float):
@@ -71,10 +78,17 @@ def convert_to_pcm(input_stream, output_file_path: str, speed: float):
 def convert_to_format(
     input_stream, output_file_path: str, response_format: str, speed: float
 ):
+    output_rate = int(input_stream.rate * speed)
+    codec_name = response_format_to_encoder_decoder_map.get(response_format)
+    codec = av.codec.Codec(codec_name, "w")
+    codec_supported_rate = codec.audio_rates
+    if codec_supported_rate:
+        output_rate = min(codec_supported_rate, key=lambda x: abs(x - output_rate))
+
     output_container = av.open(output_file_path, mode="w")
     output_stream = output_container.add_stream(
         codec_name=response_format_to_encoder_decoder_map.get(response_format),
-        rate=int(input_stream.rate * speed),
+        rate=output_rate,
         channels=input_stream.channels,
     )
 

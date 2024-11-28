@@ -42,6 +42,11 @@ async def speech(request: SpeechRequest):
                 detail=f"Unsupported audio format: {request.response_format}",
             )
 
+        if request.speed < 0.25 or request.speed > 2:
+            return HTTPException(
+                status_code=400, detail="Speed must be between 0.25 and 2"
+            )
+
         model_instance: TTSBackend = get_model_instance()
         if not isinstance(model_instance, TTSBackend):
             return HTTPException(
