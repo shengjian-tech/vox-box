@@ -1,3 +1,4 @@
+import shutil
 import tempfile
 import av
 
@@ -30,10 +31,14 @@ def convert(
     with tempfile.NamedTemporaryFile(
         suffix=f"{suffix}", delete=False
     ) as output_temp_file:
+
         output_file_path = output_temp_file.name
+        if response_format == "wav" and speed == 1:
+            shutil.copy(input_file_path, output_file_path)
+            return output_file_path
+
         input_container = av.open(input_file_path)
         input_stream = input_container.streams.audio[0]
-
         if response_format == "pcm":
             convert_to_pcm(input_stream, output_file_path, speed)
         else:

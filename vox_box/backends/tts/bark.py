@@ -73,7 +73,7 @@ class Bark(TTSBackend):
             raise ValueError(f"Voice {voice} not supported")
 
         inputs = self._processor(input, voice_preset=voice).to(self._cfg.device)
-        audio_array = self._model.generate(**inputs)
+        audio_array = self._model.generate(**inputs, history_prompt=voice)
         audio_array = audio_array.cpu().numpy().squeeze()
         sample_rate = self._model.generation_config.sample_rate
 
@@ -85,11 +85,16 @@ class Bark(TTSBackend):
             return output_file_path
 
     def _get_voices(self) -> List[str]:
-        voices = []
+        voices_v1 = []
+        voices_v2 = []
         if self._speaker_json is not None:
             for key in self._speaker_json.keys():
                 if key == "repo_or_path":
                     continue
-                voices.append(key)
+                if "v2" in key:
+                    voices_v2.append(key)
+                else:
+                    voices_v1.append(key)
 
-            return voices
+        voices = voices_v2 or voices_v1
+        return sorted(voices)
