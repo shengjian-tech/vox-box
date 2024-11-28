@@ -72,7 +72,7 @@ class CosyVoice(TTSBackend):
     def speech(
         self,
         input: str,
-        voice: Optional[str] = "中文女",
+        voice: Optional[str] = "Chinese Female",
         speed: float = 1,
         reponse_format: str = "mp3",
         **kwargs,
