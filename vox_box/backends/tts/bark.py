@@ -73,7 +73,7 @@ class Bark(TTSBackend):
             raise ValueError(f"Voice {voice} not supported")
 
         inputs = self._processor(input, voice_preset=voice).to(self._cfg.device)
-        audio_array = self._model.generate(**inputs, history_prompt=voice)
+        audio_array = self._model.generate(**inputs)
         audio_array = audio_array.cpu().numpy().squeeze()
         sample_rate = self._model.generation_config.sample_rate
 
