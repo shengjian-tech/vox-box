@@ -7,7 +7,7 @@ A text-to-speech and speech-to-text server compatible with the OpenAI API, power
 - Python 3.10 or greater
 - Support Nvidia GPU, requires the following NVIDIA libraries to be installed:
   - [cuBLAS for CUDA 12](https://developer.nvidia.com/cublas)
-  - [cuDNN 9 for CUDA 12](https://developer.nvidia.com/cudnn)
+  - [cuDNN 9 for CUDA 12](https://developer.nvidia.com/cudnn)  
 
 ## Installation
 
@@ -15,6 +15,13 @@ You can install the project using pip:
 
 ```bash
 pip install vox-box
+
+# For MacOS, you need to manually install `openfst`, `pynini`, and `wetextprocessing` after installing `vox-box` to make `cosyvoice` work:
+brew install openfst
+export CPLUS_INCLUDE_PATH=$(brew --prefix openfst)/include
+export LIBRARY_PATH=$(brew --prefix openfst)/lib
+pip install pynini==2.1.6
+pip install wetextprocessing==1.0.4.1
 ```
 
 ## Usage
@@ -54,8 +61,6 @@ vox-box start --model --huggingface-repo-id Systran/faster-whisper-small --data-
 | Paraformer-zh-streaming         | speech-to-text | [Hugging Face](https://huggingface.co/funasr/paraformer-zh-streaming), [ModelScope](https://modelscope.cn/models/iic/speech_paraformer-large_asr_nat-zh-cn-16k-common-vocab8404-online)     |
 | Paraformer-en                   | speech-to-text | [Hugging Face](https://huggingface.co/funasr/paraformer-en), [ModelScope](https://www.modelscope.cn/models/iic/speech_paraformer-large-vad-punc_asr_nat-en-16k-common-vocab10020)           |
 | Conformer-en                    | speech-to-text | [Hugging Face](https://huggingface.co/funasr/conformer-en), [Modelscope](https://modelscope.cn/models/iic/speech_conformer_asr-en-16k-vocab4199-pytorch)                                    |
-| Qwen-Audio                      | speech-to-text | [Hugging Face](https://huggingface.co/Qwen/Qwen-Audio)                                                                                                                                      |
-| Qwen-Audio-Chat                 | speech-to-text | [Hugging Face](https://huggingface.co/Qwen/Qwen-Audio-Chat)                                                                                                                                 |
 | SenseVoiceSmall                 | speech-to-text | [Hugging Face](https://huggingface.co/FunAudioLLM/SenseVoiceSmall), [ModelScope](https://www.modelscope.cn/models/iic/SenseVoiceSmall)                                                      |
 | Bark                            | text-to-speech | [Hugging Face](https://huggingface.co/suno/bark)                                                                                                                                            |
 | Bark-small                      | text-to-speech | [Hugging Face](https://huggingface.co/suno/bark-small)                                                                                                                                      |
