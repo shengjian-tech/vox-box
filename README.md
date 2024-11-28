@@ -2,6 +2,13 @@
 
 A text-to-speech and speech-to-text server compatible with the OpenAI API, powered by backend support from Whisper, FunASR, Bark, and CosyVoice.
 
+## Requirements
+
+- Python 3.10 or greater
+- Support Nvidia GPU, requires the following NVIDIA libraries to be installed:
+  - [cuBLAS for CUDA 12](https://developer.nvidia.com/cublas)
+  - [cuDNN 9 for CUDA 12](https://developer.nvidia.com/cudnn)
+
 ## Installation
 
 You can install the project using pip:
