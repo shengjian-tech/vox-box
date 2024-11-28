@@ -50,10 +50,14 @@ class FunASR(STTBackend):
             log_level=self._log_level,
             disable_update=True,
         )
+
+        self._languages = self._get_languages()
+
         self._model_dict = create_model_dict(
             self._cfg.model,
             task_type=TaskTypeEnum.STT,
             backend_framework=BackendEnum.FUN_ASR,
+            languages=self._languages,
         )
         self._model_load = True
         return self
@@ -106,3 +110,8 @@ class FunASR(STTBackend):
 
             text = rich_transcription_postprocess(res[0]["text"])
             return text
+
+    def _get_languages(self) -> List[Dict]:
+        return [
+            {"auto": "auto"},
+        ]

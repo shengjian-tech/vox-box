@@ -188,6 +188,16 @@ async def get_model_info(model_id: str):
     return model_instance.model_info()
 
 
+@router.get("/v1/languages")
+async def get_languages():
+    model_instance = get_model_instance()
+    if model_instance is None:
+        return {}
+    return {
+        "languages": model_instance.model_info().get("languages", []),
+    }
+
+
 @router.get("/v1/voices")
 async def get_voice():
     model_instance = get_model_instance()
