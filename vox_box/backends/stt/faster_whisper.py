@@ -3,7 +3,6 @@ import logging
 import os
 import platform
 from typing import Dict, List, Optional
-import tempfile
 import io
 from vox_box.backends.stt.base import STTBackend
 from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
@@ -107,48 +106,46 @@ class FasterWhisper(STTBackend):
             if "word" in timestamp_granularities:
                 word_timestamps = True
 
-        with tempfile.NamedTemporaryFile(buffering=0) as f:
-            f.write(audio)
+        audio_data = io.BytesIO(audio)
+        segs, info = self._model.transcribe(
+            audio_data,
+            language=language,
+            initial_prompt=prompt,
+            temperature=temperature,
+            without_timestamps=without_timestamps,
+            word_timestamps=word_timestamps,
+            **kwargs,
+        )
 
-            segs, info = self._model.transcribe(
-                f.name,
-                language=language,
-                initial_prompt=prompt,
-                temperature=temperature,
-                without_timestamps=without_timestamps,
-                word_timestamps=word_timestamps,
-                **kwargs,
-            )
+        # The transcription will actually run here.
+        timestamps = []
+        text_buffer = io.StringIO()
+        for seg in segs:
+            text_buffer.write(seg.text)
 
-            # The transcription will actually run here.
-            timestamps = []
-            text_buffer = io.StringIO()
-            for seg in segs:
-                text_buffer.write(seg.text)
+            if not without_timestamps:
+                if word_timestamps:
+                    for wd in seg.words:
+                        timestamps.append(wd._asdict())
+                else:
+                    timestamps.append(seg._asdict())
 
-                if not without_timestamps:
-                    if word_timestamps:
-                        for wd in seg.words:
-                            timestamps.append(wd._asdict())
-                    else:
-                        timestamps.append(seg._asdict())
+        text = text_buffer.getvalue()
+        if without_timestamps:
+            return text
 
-            text = text_buffer.getvalue()
-            if without_timestamps:
-                return text
+        response = {
+            "task": "transcribe",
+            "language": info.language,
+            "duration": info.duration,
+            "text": text,
+        }
+        if word_timestamps:
+            response["words"] = timestamps
+        else:
+            response["segments"] = timestamps
 
-            response = {
-                "task": "transcribe",
-                "language": info.language,
-                "duration": info.duration,
-                "text": text,
-            }
-            if word_timestamps:
-                response["words"] = timestamps
-            else:
-                response["segments"] = timestamps
-
-            return response
+        return response
 
     def _get_languages(self) -> List[Dict]:
         return [

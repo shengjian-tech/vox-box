@@ -96,7 +96,7 @@ class FunASR(STTBackend):
                 "Params `prompt` and `temperature` are only supported for FunASR llm asr model, will ignore them if model isn't supported"
             )
 
-        with tempfile.NamedTemporaryFile(buffering=0) as f:
+        with tempfile.NamedTemporaryFile(buffering=0, delete=False) as f:
             f.write(audio)
             res = self._model.generate(
                 input=f.name,
