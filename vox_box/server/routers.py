@@ -95,7 +95,10 @@ ALLOWED_TRANSCRIPTIONS_INPUT_AUDIO_FORMATS = {
     "audio/x-wav",
     "audio/wave",
     # webm
+    "video/webm",
     "audio/webm",
+    # file
+    "application/octet-stream",
 }
 
 ALLOWED_TRANSCRIPTIONS_OUTPUT_FORMATS = {"json", "text", "srt", "vtt", "verbose_json"}
