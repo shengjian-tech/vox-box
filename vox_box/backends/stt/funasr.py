@@ -5,6 +5,7 @@ from typing import Dict, List, Optional
 import tempfile
 from vox_box.backends.stt.base import STTBackend
 from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
+from vox_box.utils.audio import convert
 from vox_box.utils.log import log_method
 from vox_box.utils.model import create_model_dict
 
@@ -98,8 +99,14 @@ class FunASR(STTBackend):
 
         with tempfile.NamedTemporaryFile(buffering=0, delete=False) as f:
             f.write(audio)
+            input_file = f.name
+
+            content_type = kwargs.get("content_type")
+            if content_type is not None and "webm" in content_type:
+                input_file = convert(input_file, "wav", 1, "webm")
+
             res = self._model.generate(
-                input=f.name,
+                input=input_file,
                 language=language,
                 prompt=prompt,
                 temperature=temperature,

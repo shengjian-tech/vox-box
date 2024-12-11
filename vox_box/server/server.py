@@ -17,7 +17,7 @@ class Server:
         return self._config
 
     async def start(self):
-        logger.info("Starting Speech Box server.")
+        logger.info("Starting Vox Box server.")
 
         port = 80
         if self._config.port:

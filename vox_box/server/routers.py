@@ -1,4 +1,5 @@
 import asyncio
+import functools
 from fastapi import APIRouter, HTTPException, Request, UploadFile
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
@@ -53,14 +54,18 @@ async def speech(request: SpeechRequest):
                 status_code=400, detail="Model instance does not support speech API"
             )
 
-        loop = asyncio.get_event_loop()
-        audio_file = await loop.run_in_executor(
-            executor,
+        func = functools.partial(
             model_instance.speech,
             request.input,
             request.voice,
             request.speed,
             request.response_format,
+        )
+
+        loop = asyncio.get_event_loop()
+        audio_file = await loop.run_in_executor(
+            executor,
+            func,
         )
 
         media_type = get_media_type(request.response_format)
@@ -145,9 +150,10 @@ async def transcribe(request: Request):
                 detail="Model instance does not support transcriptions API",
             )
 
-        loop = asyncio.get_event_loop()
-        data = await loop.run_in_executor(
-            executor,
+        kwargs = {
+            "content_type": file_content_type,
+        }
+        func = functools.partial(
             model_instance.transcribe,
             audio_bytes,
             language,
@@ -155,6 +161,13 @@ async def transcribe(request: Request):
             temperature,
             timestamp_granularities,
             response_format,
+            **kwargs,
+        )
+
+        loop = asyncio.get_event_loop()
+        data = await loop.run_in_executor(
+            executor,
+            func,
         )
 
         if response_format == "json":
