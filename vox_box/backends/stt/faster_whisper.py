@@ -114,7 +114,6 @@ class FasterWhisper(STTBackend):
             temperature=temperature,
             without_timestamps=without_timestamps,
             word_timestamps=word_timestamps,
-            **kwargs,
         )
 
         # The transcription will actually run here.
@@ -130,7 +129,7 @@ class FasterWhisper(STTBackend):
                 else:
                     timestamps.append(seg._asdict())
 
-        text = text_buffer.getvalue()
+        text = text_buffer.getvalue().strip()
         if without_timestamps:
             return text
 
