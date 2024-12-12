@@ -61,7 +61,11 @@ class FasterWhisper(Elstimator):
                 if config.get("processor_class") == "WhisperProcessor":
                     return True
         try:
-            WhisperModel(self._cfg.model)
+            model_path = os.path.join(base_dir, "model.bin")
+            if self._cfg.model is None:
+                model_path = self._cfg.model
+
+            WhisperModel(model_path)
             return True
         except Exception as e:
             logger.error(f"Failed to load model for estimating, {e}")
@@ -78,6 +82,18 @@ class FasterWhisper(Elstimator):
                 return False
 
             if arr[0].lower() == "systran":
+                return True
+
+        # Model scope
+        if self._cfg.model_scope_model_id is not None:
+            arr = self._cfg.model_scope_model_id.split("/")
+            if len(arr) != 2:
+                logger.error(
+                    f"Invalid model scope model id: {self._cfg.model_scope_model_id}"
+                )
+                return False
+
+            if arr[0].lower() == "gpustack" and "whisper" in arr[1].lower():
                 return True
 
         # Huggingface and Model scope
