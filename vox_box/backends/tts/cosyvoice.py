@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import wave
 import numpy as np
@@ -39,19 +40,32 @@ class CosyVoice(TTSBackend):
         self._voices = None
         self._model = None
         self._model_dict = {}
+        self._is_cosyvoice_v2 = False
+
+        cosyvoice_yaml_path = os.path.join(self._cfg.model, "cosyvoice.yaml")
+        if os.path.exists(cosyvoice_yaml_path):
+            with open(cosyvoice_yaml_path, "r", encoding="utf-8") as f:
+                content = f.read()
+                if re.search(r"Qwen2", content, re.IGNORECASE):
+                    self._is_cosyvoice_v2 = True
 
     def load(self):
         for path in paths_to_insert:
             sys.path.insert(0, path)
 
-        from cosyvoice.cli.cosyvoice import CosyVoice as CosyVoiceModel
-
         if self.model_load:
             return self
 
-        self._model = CosyVoiceModel(self._cfg.model)
-        self._voices = self._get_voices()
+        if self._is_cosyvoice_v2:
+            from cosyvoice.cli.cosyvoice import CosyVoice2 as CosyVoiceModel2
 
+            self._model = CosyVoiceModel2(self._cfg.model, load_jit=True)
+        else:
+            from cosyvoice.cli.cosyvoice import CosyVoice as CosyVoiceModel
+
+            self._model = CosyVoiceModel(self._cfg.model, load_jit=True)
+
+        self._voices = self._get_voices()
         self._model_dict = create_model_dict(
             self._cfg.model,
             task_type=TaskTypeEnum.TTS,
