@@ -1,15 +1,15 @@
 from typing import Dict, List
 from vox_box.config.config import Config
-from vox_box.elstimator.bark import Bark
-from vox_box.elstimator.base import Elstimator
-from vox_box.elstimator.cosyvoice import CosyVoice
-from vox_box.elstimator.faster_whisper import FasterWhisper
-from vox_box.elstimator.funasr import FunASR
+from vox_box.estimator.bark import Bark
+from vox_box.estimator.base import Estimator
+from vox_box.estimator.cosyvoice import CosyVoice
+from vox_box.estimator.faster_whisper import FasterWhisper
+from vox_box.estimator.funasr import FunASR
 from vox_box.utils.model import create_model_dict
 
 
 def estimate_model(cfg: Config) -> Dict:
-    elstimator: List[Elstimator] = [
+    estimators: List[Estimator] = [
         FasterWhisper(cfg),
         FunASR(cfg),
         CosyVoice(cfg),
@@ -21,7 +21,11 @@ def estimate_model(cfg: Config) -> Dict:
         model,
         supported=False,
     )
-    for e in elstimator:
+
+    def get_model_info(estimator: Estimator) -> Dict:
+        return estimator.model_info()
+
+    for e in estimators:
         model_info = e.model_info()
         if model_info["supported"]:
             return model_info

@@ -5,14 +5,14 @@ from typing import Dict, List
 from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
 from vox_box.downloader.downloaders import download_model
 from vox_box.downloader.hub import match_files
-from vox_box.elstimator.base import Elstimator
+from vox_box.estimator.base import Estimator
 from vox_box.utils.model import create_model_dict
 from faster_whisper.transcribe import WhisperModel
 
 logger = logging.getLogger(__name__)
 
 
-class FasterWhisper(Elstimator):
+class FasterWhisper(Estimator):
     def __init__(
         self,
         cfg: Config,

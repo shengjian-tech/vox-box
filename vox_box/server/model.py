@@ -7,7 +7,7 @@ from vox_box.backends.tts.base import TTSBackend
 from vox_box.backends.tts.cosyvoice import CosyVoice
 from vox_box.config.config import BackendEnum, Config
 from vox_box.downloader import downloaders
-from vox_box.elstimator.estimate import estimate_model
+from vox_box.estimator.estimate import estimate_model
 
 _instance = None
 

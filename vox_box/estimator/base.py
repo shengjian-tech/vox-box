@@ -3,7 +3,7 @@ from typing import Dict
 from vox_box.config.config import Config
 
 
-class Elstimator(ABC):
+class Estimator(ABC):
     def __init__(
         self,
         cfg: Config,
