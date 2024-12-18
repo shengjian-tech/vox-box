@@ -3,7 +3,7 @@ import logging
 import os
 from typing import Dict, List
 from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
-from vox_box.downloader.downloaders import download_model
+from vox_box.downloader.downloaders import download_file
 from vox_box.downloader.hub import match_files
 from vox_box.estimator.base import Estimator
 from vox_box.utils.model import create_model_dict
@@ -107,14 +107,14 @@ class FasterWhisper(Estimator):
             if "model.bin" not in matching_files:
                 return False
         except Exception as e:
-            logger.error(f"Failed to download model file for estimating, {e}")
+            logger.debug(f"File model.bin does not exist, {e}")
             return False
 
         downloaded_files = []
         download_files = ["tokenizer.json", "preprocessor_config.json"]
         for f in download_files:
             try:
-                downloaded_file_path = download_model(
+                downloaded_file_path = download_file(
                     huggingface_repo_id=self._cfg.huggingface_repo_id,
                     huggingface_filename=f,
                     model_scope_model_id=self._cfg.model_scope_model_id,
@@ -122,7 +122,7 @@ class FasterWhisper(Estimator):
                     cache_dir=self._cfg.cache_dir,
                 )
             except Exception as e:
-                logger.error(f"Failed to download {f} for model estimate, {e}")
+                logger.debug(f"File {f} does not exist, {e}")
                 continue
 
             downloaded_files.append(downloaded_file_path)

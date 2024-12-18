@@ -1,3 +1,4 @@
+import logging
 from typing import Union
 from vox_box.backends.stt.base import STTBackend
 from vox_box.backends.stt.faster_whisper import FasterWhisper
@@ -11,12 +12,17 @@ from vox_box.estimator.estimate import estimate_model
 
 _instance = None
 
+logger = logging.getLogger(__name__)
+
 
 class ModelInstance:
     def __init__(self, cfg: Config):
         self._cfg = cfg
         self._backend_framework = None
+
+        logger.info("Estimating model")
         self._estimate = estimate_model(cfg)
+        logger.info("Finished estimating model")
         if (
             self._estimate is None
             or not self._estimate.get("supported", False)
@@ -30,7 +36,8 @@ class ModelInstance:
             or self._cfg.model_scope_model_id is not None
         ):
             try:
-                mode_path = downloaders.download_model(
+                logger.info("Downloading model")
+                mode_path = downloaders.download_file(
                     huggingface_repo_id=self._cfg.huggingface_repo_id,
                     model_scope_model_id=self._cfg.model_scope_model_id,
                     cache_dir=self._cfg.cache_dir,
@@ -54,6 +61,7 @@ class ModelInstance:
 
         if _instance is None:
             try:
+                logger.info("Loading model")
                 _instance = self._backend_framework.load()
             except Exception as e:
                 raise Exception(f"Faild to load model, {e}")

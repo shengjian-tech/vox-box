@@ -20,7 +20,7 @@ from vox_box.downloader.hub import (
 logger = logging.getLogger(__name__)
 
 
-def download_model(
+def download_file(
     huggingface_repo_id: Optional[str] = None,
     huggingface_filename: Optional[str] = None,
     model_scope_model_id: Optional[str] = None,
@@ -28,19 +28,39 @@ def download_model(
     cache_dir: Optional[str] = None,
     huggingface_token: Optional[str] = None,
 ) -> str:
+    result_path = None
+    key = None
+
     if huggingface_repo_id is not None:
-        return HfDownloader.download(
+        key = (
+            f"huggingface:{huggingface_repo_id}"
+            if huggingface_filename is None
+            else f"huggingface:{huggingface_repo_id}:{huggingface_filename}"
+        )
+        logger.debug(f"Downloading {key}")
+
+        result_path = HfDownloader.download(
             repo_id=huggingface_repo_id,
             filename=huggingface_filename,
             token=huggingface_token,
             cache_dir=os.path.join(cache_dir, "huggingface"),
         )
     elif model_scope_model_id is not None:
-        return ModelScopeDownloader.download(
+        key = (
+            f"modelscope:{model_scope_model_id}"
+            if model_scope_file_path is None
+            else f"modelscope:{model_scope_model_id}:{model_scope_file_path}"
+        )
+        logger.debug(f"Downloading {key}")
+
+        result_path = ModelScopeDownloader.download(
             model_id=model_scope_model_id,
             file_path=model_scope_file_path,
             cache_dir=os.path.join(cache_dir, "model_scope"),
         )
+
+    logger.debug(f"Downloaded {key}")
+    return result_path
 
 
 def get_file_size(
@@ -150,8 +170,6 @@ class HfDownloader:
         if len(matching_files) == 0:
             raise ValueError(f"No file found in {repo_id} that match {filename}")
 
-        logger.info(f"Downloading model {repo_id}/{filename}")
-
         subfolder, first_filename = (
             str(Path(matching_files[0]).parent),
             Path(matching_files[0]).name,
@@ -193,7 +211,6 @@ class HfDownloader:
         else:
             model_path = os.path.join(local_dir, first_filename)
 
-        logger.info(f"Downloaded model {repo_id}/{filename}")
         return model_path
 
     def __call__(self):
@@ -242,7 +259,6 @@ class ModelScopeDownloader:
         name = name.replace(".", "___")
         lock_filename = os.path.join(cache_dir, group_or_owner, f"{name}.lock")
 
-        logger.info("Retriving file lock")
         with FileLock(lock_filename):
             if file_path is not None:
                 matching_files = match_model_scope_file_paths(model_id, file_path)

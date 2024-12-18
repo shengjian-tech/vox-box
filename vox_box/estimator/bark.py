@@ -3,7 +3,7 @@ import logging
 import os
 from typing import Dict
 from vox_box.config.config import BackendEnum, Config, TaskTypeEnum
-from vox_box.downloader.downloaders import download_model
+from vox_box.downloader.downloaders import download_file
 from vox_box.estimator.base import Estimator
 from vox_box.utils.model import create_model_dict
 
@@ -18,10 +18,8 @@ class Bark(Estimator):
         self._cfg = cfg
         self._required_files = [
             "config.json",
-            "speaker_embeddings_path.json",
         ]
         self._config_json = None
-        self._speaker_json = None
 
     def model_info(self) -> Dict:
         model = (
@@ -61,17 +59,13 @@ class Bark(Estimator):
             if architectures is not None and "BarkModel" in architectures:
                 supported = True
 
-        speaker_path = os.path.join(base_dir, "speaker_embeddings_path.json")
-        with open(speaker_path, "r", encoding="utf-8") as f:
-            self._speaker_json = json.load(f)
-
         return supported
 
     def _check_remote_model(self) -> bool:
         downloaded_files = []
         for f in self._required_files:
             try:
-                downloaded_file_path = download_model(
+                downloaded_file_path = download_file(
                     huggingface_repo_id=self._cfg.huggingface_repo_id,
                     huggingface_filename=f,
                     model_scope_model_id=self._cfg.model_scope_model_id,
@@ -80,7 +74,7 @@ class Bark(Estimator):
                 )
                 downloaded_files.append(downloaded_file_path)
             except Exception as e:
-                logger.error(f"Failed to download {f}, {e}")
+                logger.debug(f"File {f} does not exist, {e}")
                 continue
 
         if len(downloaded_files) != 0:
