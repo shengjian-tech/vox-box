@@ -4,6 +4,7 @@ import sys
 import wave
 import numpy as np
 import tempfile
+import torch
 from typing import Dict, List, Optional
 
 from vox_box.backends.tts.base import TTSBackend
@@ -18,6 +19,8 @@ paths_to_insert = [
         os.path.dirname(__file__), "../../third_party/CosyVoice/third_party/Matcha-TTS"
     ),
 ]
+
+builtin_spk2info_path = os.path.join(os.path.dirname(__file__), "cosyvoice_spk2info.pt")
 
 
 class CosyVoice(TTSBackend):
@@ -60,6 +63,12 @@ class CosyVoice(TTSBackend):
             from cosyvoice.cli.cosyvoice import CosyVoice2 as CosyVoiceModel2
 
             self._model = CosyVoiceModel2(self._cfg.model, load_jit=True)
+
+            # CosyVoice2 does not have builtin spk2info.pt
+            if not self._model.frontend.spk2info:
+                self._model.frontend.spk2info = torch.load(
+                    builtin_spk2info_path, map_location=self._cfg.device
+                )
         else:
             from cosyvoice.cli.cosyvoice import CosyVoice as CosyVoiceModel
 
@@ -114,7 +123,7 @@ class CosyVoice(TTSBackend):
                 return output_file_path
 
     def _get_voices(self) -> List[str]:
-        voices = self._model.list_avaliable_spks()
+        voices = self._model.list_available_spks()
         return [self.language_map.get(voice, voice) for voice in voices]
 
     def _get_original_voice(self, voice: str) -> str:
