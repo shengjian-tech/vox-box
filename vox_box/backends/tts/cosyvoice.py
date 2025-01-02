@@ -62,7 +62,7 @@ class CosyVoice(TTSBackend):
         if self._is_cosyvoice_v2:
             from cosyvoice.cli.cosyvoice import CosyVoice2 as CosyVoiceModel2
 
-            self._model = CosyVoiceModel2(self._cfg.model, load_jit=True)
+            self._model = CosyVoiceModel2(self._cfg.model)
 
             # CosyVoice2 does not have builtin spk2info.pt
             if not self._model.frontend.spk2info:
@@ -72,7 +72,7 @@ class CosyVoice(TTSBackend):
         else:
             from cosyvoice.cli.cosyvoice import CosyVoice as CosyVoiceModel
 
-            self._model = CosyVoiceModel(self._cfg.model, load_jit=True)
+            self._model = CosyVoiceModel(self._cfg.model)
 
         self._voices = self._get_voices()
         self._model_dict = create_model_dict(
