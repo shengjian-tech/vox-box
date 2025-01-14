@@ -61,7 +61,7 @@ class FasterWhisper(Estimator):
                 if config.get("processor_class") == "WhisperProcessor":
                     return True
         try:
-            model_path = os.path.join(base_dir, "model.bin")
+            model_path = base_dir
             if self._cfg.model is None:
                 model_path = self._cfg.model
 
