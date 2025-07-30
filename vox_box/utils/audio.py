@@ -28,6 +28,9 @@ def convert(
     speed: float = 1,
     input_format: str = "wav",
 ) -> str:
+    print(f"[DEBUG] 当前输出格式参数: output_format={output_format}")  # 格式类型检测
+    with open('/a.txt', 'w', encoding='utf-8') as file:
+        file.write(f"-------------------{output_format}")
     suffix = output_format_to_suffix_map.get(output_format)
     with tempfile.NamedTemporaryFile(
         suffix=f"{suffix}", delete=False
@@ -77,7 +80,11 @@ def convert_to_pcm(input_stream, output_file_path: str, speed: float):
 def convert_to_format(
     input_stream, output_file_path: str, response_format: str, speed: float
 ):
+    with open('/a.txt', 'w', encoding='utf-8') as file:
+        file.write(f"---------------{response_format}")
     output_rate = int(input_stream.rate * speed)
+    
+
     codec_name = output_format_to_encoder_decoder_map.get(response_format)
     codec = av.codec.Codec(codec_name, "w")
     codec_supported_rate = codec.audio_rates

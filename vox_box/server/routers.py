@@ -9,9 +9,15 @@ from vox_box.backends.tts.base import TTSBackend
 from vox_box.server.model import get_model_instance
 from concurrent.futures import ThreadPoolExecutor
 
+from fastapi import Form, UploadFile, File
+from typing import Optional
+import logging
+
 router = APIRouter()
 
 executor = ThreadPoolExecutor()
+
+logger = logging.getLogger(__name__)
 
 ALLOWED_SPEECH_OUTPUT_AUDIO_TYPES = {
     "mp3",
@@ -73,6 +79,75 @@ async def speech(request: SpeechRequest):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Failed to generate speech, {e}")
 
+
+@router.post("/v1/audio/copy")
+async def copy(
+    model: str = Form(...),
+    input: str = Form(...),
+    voice: str = Form(...),
+    response_format: str = Form("mp3"),
+    speed: float = Form(1.0),
+    prompt_text: Optional[str] = Form(None),  # 新增参数
+    prompt_wav: Optional[UploadFile] = File(None),  # 新增文件上传
+):
+    try:
+        # 验证响应格式
+        if response_format and response_format not in ALLOWED_SPEECH_OUTPUT_AUDIO_TYPES:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported audio format: {response_format}",
+            )
+
+        # 验证语速
+        if speed < 0.25 or speed > 2:
+            raise HTTPException(
+                status_code=400, detail="Speed must be between 0.25 and 2"
+            )
+
+        # 验证音频文件类型
+        if prompt_wav:
+            content_type = prompt_wav.content_type
+            if content_type not in ALLOWED_TRANSCRIPTIONS_INPUT_AUDIO_FORMATS:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Unsupported prompt audio format: {content_type}",
+                )
+
+        # 获取TTS模型实例
+        model_instance: TTSBackend = get_model_instance()
+        if not isinstance(model_instance, TTSBackend):
+            raise HTTPException(
+                status_code=400, detail="Model instance does not support speech API"
+            )
+
+        # 准备额外参数
+        kwargs = {}
+        if prompt_text:
+            kwargs["prompt_text"] = prompt_text
+        if prompt_wav:
+            # 读取上传的音频文件内容
+            kwargs["prompt_wav"] = prompt_wav
+
+        # 创建函数部分应用
+        func = functools.partial(
+            model_instance.speech,
+            input,
+            voice,
+            speed,
+            response_format,
+            **kwargs
+        )
+
+        loop = asyncio.get_event_loop()
+        audio_file = await loop.run_in_executor(
+            executor,
+            func,
+        )
+
+        media_type = get_media_type(response_format)
+        return FileResponse(audio_file, media_type=media_type)
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"Failed to generate speech, {e}")
 
 # ref: https://github.com/LMS-Community/slimserver/blob/public/10.0/types.conf
 ALLOWED_TRANSCRIPTIONS_INPUT_AUDIO_FORMATS = {

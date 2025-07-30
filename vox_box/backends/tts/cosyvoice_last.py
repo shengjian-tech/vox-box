@@ -14,12 +14,6 @@ from vox_box.utils.audio import convert
 from vox_box.utils.model import create_model_dict
 import logging
 
-from fastapi import FastAPI, Form, File, UploadFile
-from fastapi.responses import Response
-import base64
-app = FastAPI()
-
-
 paths_to_insert = [
     os.path.join(os.path.dirname(__file__), "../../third_party/CosyVoice"),
     os.path.join(
@@ -60,40 +54,16 @@ class CosyVoice(TTSBackend):
         # 配置每个发音人的语音路径和提示语
         self.custom_voice_configs = {
             "zh_female_wanwanxiaohe": {
-                "prompt_wav": "/agi/gpustack/audio/xh.mp3",
+                "prompt_wav": "/agi/gpustack/xh.mp3",
                 "prompt_text": "今天天氣真是太好了，陽光燦爛心情超級棒，但是朋友最近的感情問題也讓我心痛不已，好像世界末日一樣，真的好為他難過喔。",
             },
             "zh_female_gaolengyujie": {
-                "prompt_wav": "/agi/gpustack/audio/xh_red.mp3",
+                "prompt_wav": "/agi/gpustack/xh_red.mp3",
                 "prompt_text": "亲爱的，我们到此为止吧，我倦了，不想再继续这场无聊的游戏了，你我之间，也许曾经有一些美好，但那也只是曾经罢了。",
             },
             "zh_male_yangguangqingnian": {
-                "prompt_wav": "/agi/gpustack/audio/xm.mp3",
+                "prompt_wav": "/agi/gpustack/xm.mp3",
                 "prompt_text": "今天又是超棒的一天呀，阳光这么好，心情也跟着超级美丽呢，生活嘛，就该充满活力和欢笑呀，我呀，要像那灿烂的阳光一样，永远积极向上，去追寻自己的梦想，去体验各种好玩的事情，去认识更多有趣的人。",
-            },
-            "zh_male_shaonianzixin": {
-                "prompt_wav": "/agi/gpustack/audio/brayan.mp3",
-                "prompt_text": "How are you today? I had a really cool day at school today. We had a great science class and I learned some fascinating stuff. And then I played basketball with my friends during the break, it was so much fun. What about you?",
-            },
-            "en_male_smith": {
-                "prompt_wav": "/agi/gpustack/audio/smith.mp3",
-                "prompt_text": "I am a man of principles. I will never compromise my beliefs for temporary gains. Justice and fairness are what I pursue. I will stand up and fight for what is right, no matter how strong the opposition is.",
-            },
-            "en_female_anna": {
-                "prompt_wav": "/agi/gpustack/audio/anna.mp3",
-                "prompt_text": "Dreams are the stars that light up my path. I won't let obstacles dim their shine. I'll work hard, step by step, to turn those dreams into reality. Because in the pursuit, I find the true meaning and joy of living.",
-            },
-            "zh_female_yuanqinvyou": {
-                "prompt_wav": "/agi/gpustack/audio/sjnvyou.mp3",
-                "prompt_text": "等会儿,你一定要好好的,用心地让人家品尝一下你亲自做的美食哟。人家可期待了呢,你做的肯定超级超级好吃,人家现在就已经迫不及待了。亲爱的最好了啦!",
-            },
-            "zh_female_sajiaonvyou": {
-                "prompt_wav": "/agi/gpustack/audio/rmnvyou.mp3",
-                "prompt_text": "亲爱的,这么晚了,你还没睡呀,我想跟你说,不管什么时候,我都会在你身边的呀,你累的时候就靠靠我,不开心了,我就哄你开心。",
-            },
-            "zh_female_meilinvyou": {
-                "prompt_wav": "/agi/gpustack/audio/mlnvyou.mp3",
-                "prompt_text": "以後呢,你只能對我一個人好,心裡也只能裝著我,不管發生什麼,都要第一時間想到我,我可會一直賴著你的,你別想跑掉了,還有呀,要好好愛我寵我,不然我可不一呢。",
             }
         }
 
@@ -181,7 +151,7 @@ class CosyVoice(TTSBackend):
         reponse_format: str = "mp3",
         **kwargs,
     ) -> str:
-        if voice not in self._voices and (kwargs.get('prompt_text') == "" or kwargs.get('prompt_text') is None):
+        if voice not in self._voices:
             raise ValueError(f"Voice {voice} not supported")
 
         # 根据发言人选择调用方式
@@ -191,17 +161,10 @@ class CosyVoice(TTSBackend):
             input, original_voice, stream=False, speed=speed
             )
         else:
-            # 极速复刻
-            if ('prompt_text' in kwargs) and ('prompt_wav' in kwargs):
-                prompt_text = kwargs.get('prompt_text')
-                from cosyvoice.utils.file_utils import load_wav
-                prompt_speech_16k = load_wav(kwargs.get('prompt_wav').file, 16000)
-            else:
-                prompt_text  = self.custom_voice_prompts[voice]["prompt_text"]
-                prompt_speech_16k = self.custom_voice_prompts[voice]["prompt_speech_16k"]
-            
-            print("prompt_text", prompt_text)
-            print("prompt_speech_16k", prompt_speech_16k)
+            prompt_text  = self.custom_voice_prompts[voice]["prompt_text"]
+            prompt_speech_16k = self.custom_voice_prompts[voice]["prompt_speech_16k"]
+            print("prompt_text", self.custom_voice_prompts[voice]["prompt_text"])
+            print("prompt_speech_16k", self.custom_voice_prompts[voice]["prompt_speech_16k"])
             model_output = self._model.inference_zero_shot(
                 input, prompt_text, prompt_speech_16k, stream=False, speed=speed
             )
@@ -233,4 +196,3 @@ class CosyVoice(TTSBackend):
 
     def _get_original_voice(self, voice: str) -> str:
         return self.reverse_language_map.get(voice, voice)
-

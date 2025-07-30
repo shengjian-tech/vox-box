@@ -1,2 +1,2 @@
-__version__ = "0.0.0"
-__git_commit__ = "HEAD"
+__version__ = 'v0.0.14'
+__git_commit__ = '10c3246'
