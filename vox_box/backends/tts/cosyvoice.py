@@ -63,6 +63,10 @@ class CosyVoice(TTSBackend):
                 "prompt_wav": "/agi/gpustack/audio/xh.mp3",
                 "prompt_text": "今天天氣真是太好了，陽光燦爛心情超級棒，但是朋友最近的感情問題也讓我心痛不已，好像世界末日一樣，真的好為他難過喔。",
             },
+            "zh_male_misila": {
+                "prompt_wav": "/agi/gpustack/audio/misila.mp3",
+                "prompt_text": "新版本即将到来，都有哪些更新内容呢，下面我们一起抢先看，万圣节游园会尖叫来袭，丰富的主题和场景玩法。",
+            },
             "zh_female_gaolengyujie": {
                 "prompt_wav": "/agi/gpustack/audio/xh_red.mp3",
                 "prompt_text": "亲爱的，我们到此为止吧，我倦了，不想再继续这场无聊的游戏了，你我之间，也许曾经有一些美好，但那也只是曾经罢了。",
